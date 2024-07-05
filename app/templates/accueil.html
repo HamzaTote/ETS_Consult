@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+<head>
+    <title>Accueil</title>
+</head>
+{% block content %}
+    
+    <div>
+        <div class="d-grid gap-2" style="margin: 300px 500px 20px 500px;">
+            <a href="{{ url_for('List_FichesSuivi') }}" class="btn btn-lg btn-primary" role="button">
+                Projets en phase de consulation
+            </a>
+        </div>
+        <div class="d-grid gap-2" style="margin: 0px 500px 20px 500px;">
+            <button class="btn btn-lg btn-primary" type="button">Projets en phase de production</button>
+        </div>
+    </div>
+{% endblock %}

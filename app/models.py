@@ -18,7 +18,7 @@ class Personne(Base):
     societe_id = db.Column(db.Integer, ForeignKey('societe.id'), nullable=True)
     poste_societe = db.Column(db.String(45), index=True)
     user = relationship('User', uselist=False, back_populates='personne')
-    agent = relationship('Agent', uselist=False, back_populates='personne')
+    #agent = relationship('Agent', uselist=False, back_populates='personne')
     client = relationship('Client', uselist=False, back_populates='personne')
 
     def __repr__(self):
@@ -30,10 +30,11 @@ class User(Base):
     username = db.Column(db.String(45), index=True, unique=True)
     password = db.Column(db.String(45), index=True, unique=True)
     personne_id = db.Column(db.Integer, ForeignKey('personne.id'), nullable=False)
-    agent_id = db.Column(db.Integer, ForeignKey('agent.id'), nullable=False)
+    #agent_id = db.Column(db.Integer, ForeignKey('agent.id'), nullable=False)
     privilege = db.Column(db.String(10), nullable=False)
     personne = relationship('Personne', uselist=False, back_populates='user')
-    agent = relationship('Agent', uselist=False, back_populates='user')
+    #agent = relationship('Agent', uselist=False, back_populates='user')
+    fiche_suivi = relationship('FicheSuivi', back_populates='user')
 
     __table_args__ = (
         CheckConstraint("privilege IN ('admin', 'agent')", name='check_user_privilege'),
@@ -41,7 +42,21 @@ class User(Base):
 
     def __repr__(self):
         return f'<User {self.id} - {self.email}>'
+    
+    def add_user(self,nom, prenom, username, password, privilege):
+        if self.privilege == 'admin':
+            return User(nom, prenom, username=username, password=password, privilege=privilege)
+        
+    def modify_user(self, nom, prenom, username, password, privilege):
+        self.nom = nom
+        self.prenom = prenom
+        self.username = username
+        self.password = password
+        self.privilege = privilege
+        return self            
 
+
+"""
 class Agent(Base):
     __tablename__ = 'agent'
     id = db.Column(db.Integer, primary_key=True)
@@ -53,7 +68,7 @@ class Agent(Base):
 
     def __repr__(self):
         return f'<Agent {self.id}>'
-
+"""
 class Client(Base):
     __tablename__ = 'client'
     id = db.Column(db.Integer, primary_key=True)
@@ -61,7 +76,7 @@ class Client(Base):
     personne_id = db.Column(db.Integer, ForeignKey('personne.id'), nullable=False)
     personne = relationship('Personne', uselist=False, back_populates='client')
     societe = relationship('Societe', uselist=False, back_populates='client')
-    fiche_suivi = relationship('FicheSuivi', back_populates='societe')
+    fiche_suivi = relationship('FicheSuivi', back_populates='client')
 
     __table_args__ = (
         CheckConstraint('societe_id IS NOT NULL OR personne_id IS NOT NULL', name='check_societe_personne_not_both_null'),
@@ -95,9 +110,11 @@ class FicheSuivi(Base):
     ouvrage_id = db.Column(db.Integer, ForeignKey('ouvrage.id'))
     client_id = db.Column(db.Integer, ForeignKey('client.id'))
     date_debut = db.Column(db.DateTime, index=True, default=datetime.now(timezone.utc))
-    agent_id = db.Column(db.Integer, ForeignKey('agent.id'))
+    #agent_id = db.Column(db.Integer, ForeignKey('agent.id'))
+    user_id = db.Column(db.Integer, ForeignKey('user.id'))
     client = relationship('Client', back_populates='fiche_suivi')
-    agent = relationship('Agent', back_populates='fiche_suivi')
+    user = relationship('User', back_populates='fiche_suivi')
+    devis = relationship('Devis', back_populates='fiche_suivi')
 
     def __repr__(self):
         return f'<FicheSuivi {self.id}>'
@@ -129,3 +146,15 @@ class Dossier(Base):
 
     def __repr__(self):
         return f'<Dossier {self.id}>'
+
+
+#Documents
+
+class Devis(Base):
+    id = db.Column(db.Integer, primary_key=True)
+    numero = db.Column(db.String(45), index=True, unique=True)
+    fiche_suivi_id = db.Column(db.Integer, ForeignKey('fiche_suivi.id'))
+    date = db.Column(db.DateTime, index=True, default=datetime.now(timezone.utc))
+    montant = db.Column(db.Float, index=True)
+    fiche_suivi = relationship('FicheSuivi', back_populates='devis')
+    
