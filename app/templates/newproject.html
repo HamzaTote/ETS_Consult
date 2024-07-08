@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Nouveau projet</h1><br>
+    <div>
+        <form action="" method="post" novalidate>
+            <div id="projet" style="margin: 0px 100px 0px 100px;">
+                {{ form.hidden_tag() }}
+                <h2>Infos du projet:</h2>
+                <p>
+                    {{ form.FSN.label }}<br>
+                    {{ form.FSN(size=32) }}
+                </p>
+                <p>
+                    {{ form.nom.label }}<br>
+                    {{ form.nom(size=32) }}
+                </p>
+                <p>
+                    {{ form.adresse.label }}<br>
+                    {{ form.adresse(size=32) }}
+                </p>
+                <p>
+                    {{ form.agent.label }}<br>
+                    {{ form.agent() }}
+                </p>
+                <label class="col-form-label mt-4" for="inputDefault">Nombre de la fiche de suivi</label>
+                <input type="text" class="form-control" placeholder="Nombre de le fiche de suivi" id="FSN" 
+                    value="{{ form.FSN._value() }}">
+            </div>
+        </form>
+        <div id="client">
+
+        </div>
+    </div>
+{% endblock %}

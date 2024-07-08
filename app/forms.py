@@ -37,3 +37,19 @@ class UserModification(FlaskForm):
             raise ValidationError('Please confirm your password.')
         if self.confirm_password.data and not field.data:
             raise ValidationError('Please enter a password.')
+        
+class ProjectCreation(FlaskForm):
+    FSN = StringField('FSN')
+    nom = StringField('Projet')
+    adresse = StringField('Adresse')
+    agent = SelectField('Agent', choices=[], validators=[DataRequired()])
+
+class ClientCreation(FlaskForm):
+    nom = StringField('Nom')
+    type_societe = StringField('Type société')
+    domaine = StringField('Domaine')
+    tel1 = StringField('Tel1')
+    tel2 = StringField('Tel2')
+    fax = StringField('Fax')
+    email = StringField('Email')
+    

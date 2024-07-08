@@ -5,13 +5,14 @@
 {% block content %}
     
     <div>
-        <div class="d-grid gap-2" style="margin: 300px 500px 20px 500px;">
+        <div class="d-grid gap-2" style="margin: 300px 500px 9px 500px;">
             <a href="{{ url_for('List_FichesSuivi') }}" class="btn btn-lg btn-primary" role="button">
                 Projets en phase de consulation
             </a>
         </div>
         <div class="d-grid gap-2" style="margin: 0px 500px 20px 500px;">
-            <button class="btn btn-lg btn-primary" type="button">Projets en phase de production</button>
+            <a href="" class="btn btn-lg btn-primary" role="button">Projets en phase de production</a>
+            <a href="{{ url_for('AjouterProjet') }}" class="btn btn-lg btn-secondary" role="button">Nouveau projet +</a>
         </div>
     </div>
 {% endblock %}

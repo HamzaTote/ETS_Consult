@@ -7,7 +7,7 @@ Base = db.Model
 
 class Personne(Base):
     __tablename__ = 'personne'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nom = db.Column(db.String(45), index=True)
     prenom = db.Column(db.String(45), index=True)
     adresse = db.Column(db.String(45), index=True, unique=True)
@@ -26,7 +26,7 @@ class Personne(Base):
 
 class User(Base):
     __tablename__ = 'user'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(45), index=True, unique=True)
     password = db.Column(db.String(45), index=True, unique=True)
     personne_id = db.Column(db.Integer, ForeignKey('personne.id'), nullable=False)
@@ -71,7 +71,7 @@ class Agent(Base):
 """
 class Client(Base):
     __tablename__ = 'client'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     societe_id = db.Column(db.Integer, ForeignKey('societe.id'), nullable=True)
     personne_id = db.Column(db.Integer, ForeignKey('personne.id'), nullable=False)
     personne = relationship('Personne', uselist=False, back_populates='client')
@@ -87,7 +87,7 @@ class Client(Base):
 
 class Societe(Base):
     __tablename__ = 'societe'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nom = db.Column(db.String(45), index=True, unique=True)
     type_societe = db.Column(db.String(45), index=True)
     domaine = db.Column(db.String(45), index=True)
@@ -100,9 +100,20 @@ class Societe(Base):
     def __repr__(self):
         return f'<Societe {self.id} - {self.nom}>'
 
+class Projet(Base):
+    __tablename__ = 'projet'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    nom = db.Column(db.String(45), index=True, unique=True)
+    adresse = db.Column(db.String(45), index=True, unique=True)
+    client_id = db.Column(db.Integer, ForeignKey('client.id'))
+    fiche_suivi = relationship('FicheSuivi', back_populates='projet')
+
+    def __repr__(self):
+        return f'<Projet {self.id} - {self.nom}>'
+
 class FicheSuivi(Base):
     __tablename__ = 'fiche_suivi'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     FSN = db.Column(db.Integer, index=True, unique=True)
     projet = db.Column(db.String(255), index=True, unique=True)
     adresse = db.Column(db.String(255), index=True, unique=True)
@@ -110,18 +121,20 @@ class FicheSuivi(Base):
     ouvrage_id = db.Column(db.Integer, ForeignKey('ouvrage.id'))
     client_id = db.Column(db.Integer, ForeignKey('client.id'))
     date_debut = db.Column(db.DateTime, index=True, default=datetime.now(timezone.utc))
+    projet_id = db.Column(db.Integer, ForeignKey('projet.id'))
     #agent_id = db.Column(db.Integer, ForeignKey('agent.id'))
     user_id = db.Column(db.Integer, ForeignKey('user.id'))
     client = relationship('Client', back_populates='fiche_suivi')
     user = relationship('User', back_populates='fiche_suivi')
     devis = relationship('Devis', back_populates='fiche_suivi')
+    projet = relationship('Projet', back_populates='fiche_suivi')
 
     def __repr__(self):
         return f'<FicheSuivi {self.id}>'
 
 class Prestation(Base):
     __tablename__ = 'prestation'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     type_prestation = db.Column(db.String(45), index=True)
     code = db.Column(db.String(45), index=True, unique=True)
 
@@ -130,7 +143,7 @@ class Prestation(Base):
 
 class Ouvrage(Base):
     __tablename__ = 'ouvrage'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     type_ouvrage = db.Column(db.String(45), index=True)
     code = db.Column(db.String(45), index=True, unique=True)
 
@@ -139,7 +152,7 @@ class Ouvrage(Base):
 
 class Dossier(Base):
     __tablename__ = 'dossier'
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     numero = db.Column(db.String(45), index=True, unique=True)
     annee = db.Column(db.Integer, index=True)
     fiche_suivi_id = db.Column(db.Integer, ForeignKey('fiche_suivi.id'))
@@ -151,7 +164,7 @@ class Dossier(Base):
 #Documents
 
 class Devis(Base):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     numero = db.Column(db.String(45), index=True, unique=True)
     fiche_suivi_id = db.Column(db.Integer, ForeignKey('fiche_suivi.id'))
     date = db.Column(db.DateTime, index=True, default=datetime.now(timezone.utc))
