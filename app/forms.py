@@ -39,7 +39,6 @@ class UserModification(FlaskForm):
             raise ValidationError('Please enter a password.')
         
 class ProjectCreation(FlaskForm):
-    FSN = StringField('FSN')
     nom = StringField('Projet')
     adresse = StringField('Adresse')
     agent = SelectField('Agent', choices=[], validators=[DataRequired()])
@@ -52,4 +51,16 @@ class ClientCreation(FlaskForm):
     tel2 = StringField('Tel2')
     fax = StringField('Fax')
     email = StringField('Email')
+    
+class AgentCreation(FlaskForm):
+    nom = StringField('Nom')
+    prenom = StringField('Prenom')
+    adresse = StringField('Adresse')
+    tel = StringField('Tel')
+    gsm = StringField('GSM')
+    email = StringField('Email')
+    profession = StringField('Profession')
+    username = StringField('Username')
+    password = PasswordField('Password')
+    privilege = SelectField('Privilege', choices=[('admin', 'admin'), ('agent', 'agent')])
     

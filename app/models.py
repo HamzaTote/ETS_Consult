@@ -56,19 +56,19 @@ class User(Base):
         return self            
 
 
-"""
-class Agent(Base):
-    __tablename__ = 'agent'
-    id = db.Column(db.Integer, primary_key=True)
-    code_agent = db.Column(db.String(45), index=True, unique=True)
-    personne_id = db.Column(db.Integer, ForeignKey('personne.id'), nullable=False)
-    personne = relationship('Personne', uselist=False, back_populates='agent')
-    user = relationship('User', uselist=False, back_populates='agent')
-    fiche_suivi = relationship('FicheSuivi', back_populates='societe')
 
-    def __repr__(self):
-        return f'<Agent {self.id}>'
-"""
+# class Agent(Base):
+#     __tablename__ = 'agent'
+#     id = db.Column(db.Integer, primary_key=True)
+#     code_agent = db.Column(db.String(45), index=True, unique=True)
+#     personne_id = db.Column(db.Integer, ForeignKey('personne.id'), nullable=False)
+#     personne = relationship('Personne', uselist=False, back_populates='agent')
+#     user = relationship('User', uselist=False, back_populates='agent')
+#     fiche_suivi = relationship('FicheSuivi', back_populates='societe')
+
+#     def __repr__(self):
+#         return f'<Agent {self.id}>'
+
 class Client(Base):
     __tablename__ = 'client'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -100,21 +100,21 @@ class Societe(Base):
     def __repr__(self):
         return f'<Societe {self.id} - {self.nom}>'
 
-class Projet(Base):
-    __tablename__ = 'projet'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    nom = db.Column(db.String(45), index=True, unique=True)
-    adresse = db.Column(db.String(45), index=True, unique=True)
-    client_id = db.Column(db.Integer, ForeignKey('client.id'))
-    fiche_suivi = relationship('FicheSuivi', back_populates='projet')
+# class Projet(Base):
+#     __tablename__ = 'projet'
+#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     nom = db.Column(db.String(200), index=True, unique=True)
+#     adresse = db.Column(db.String(45), index=True, unique=True)
+#     client_id = db.Column(db.Integer, ForeignKey('client.id'))
+#     fiche_suivi = relationship('FicheSuivi', back_populates='projet')
 
-    def __repr__(self):
-        return f'<Projet {self.id} - {self.nom}>'
+#     def __repr__(self):
+#         return f'<Projet {self.id} - {self.nom}>'
 
 class FicheSuivi(Base):
     __tablename__ = 'fiche_suivi'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    FSN = db.Column(db.Integer, index=True, unique=True)
+    FSN = db.Column(db.String, index=True, unique=True)
     projet = db.Column(db.String(255), index=True, unique=True)
     adresse = db.Column(db.String(255), index=True, unique=True)
     prestation_id = db.Column(db.Integer, ForeignKey('prestation.id'))
@@ -131,6 +131,19 @@ class FicheSuivi(Base):
 
     def __repr__(self):
         return f'<FicheSuivi {self.id}>'
+    
+    def generate_fsn(self):
+        current_year = datetime.now().year % 100
+        last_project = FicheSuivi.query.filter(FicheSuivi.FSN.endswith(f'/{current_year}')).order_by(FicheSuivi.id.desc()).first()
+    
+        if last_project:
+            last_fsn_number = int(last_project.FSN.split('/')[0])
+            new_fsn_number = last_fsn_number + 1
+        else:
+            new_fsn_number = 1
+
+        new_fsn = f'{new_fsn_number:02d}/{current_year}'
+        return new_fsn
 
 class Prestation(Base):
     __tablename__ = 'prestation'

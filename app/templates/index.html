@@ -1,5 +1,33 @@
 {% extends "base.html" %}
 
 {% block content %}
-    
+    <head>
+    <style>
+        .image-container {
+            position: relative;
+            display: inline-block;
+            width: auto;
+        }
+
+        .image-container img {
+            display: block;
+        }
+
+        .image-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(to right, rgba(255,255,255,0) 80%, rgba(255,255,255,1) 100%);
+            pointer-events: none; /* Allows clicks to pass through */
+        }
+    </style>
+</head>
+<body>
+    <div class="image-container">
+        <img src="/static/img/index.jpg" alt="">
+    </div>
+</body>
 {% endblock %}

@@ -1,8 +1,10 @@
 from app import app, db
 from flask import render_template, flash, redirect, url_for
-from app.forms import LoginForm, ProjectCreation, ClientCreation
-from app.models import User, FicheSuivi, Client, Societe, Projet
+from app.forms import LoginForm, ProjectCreation, ClientCreation, AgentCreation
+from app.models import User, FicheSuivi, Client, Societe, Projet, Personne
 from flask_login import current_user, login_user, logout_user, login_required
+from datetime import datetime
+from werkzeug.security import generate_password_hash
 
 @app.route('/')
 
@@ -32,7 +34,7 @@ def List_FichesSuivi():
     fiche_suivi = FicheSuivi.query.all()
     return render_template('list_prj_consultation.html', title='Fiches de suivi', fiches=fiche_suivi)
 
-@app.route('/NouveauProjet')
+@app.route('/NouveauProjet', methods=['GET', 'POST'])
 def AjouterProjet():
     form = ProjectCreation() 
     form2 = ClientCreation()
@@ -44,8 +46,8 @@ def AjouterProjet():
             client_id = new_client.id
         )    
         new_fiche = FicheSuivi(
-            FSN=form.FSN.data,
-            nom=form.nom.data,
+            fsn = new_fiche.generate_fsn(),
+            projet=form.nom.data,
             adresse=form.adresse.data,
             agent=form.agent.data,
             client_id=new_client.id,
@@ -66,3 +68,32 @@ def AjouterProjet():
         db.session.add(new_societe, new_fiche, new_client, new_projet)
         db.session.commit()
     return render_template('newproject.html', title='NouveauProjet', form=form, form2=form2)
+
+@app.route('/CreerAgent', methods=['GET', 'POST'])
+def CreerAgent():
+    form = AgentCreation()
+    if current_user.privilege == 'admin':
+        if form.validate_on_submit():
+            new_agent = Personne(
+                nom=form.nom.data,
+                prenom=form.prenom.data,
+                adresse=form.adresse.data,
+                tel=form.tel.data,
+                gsm=form.gsm.data,
+                email=form.email.data
+            )
+            password_hash = generate_password_hash(form.password.data)
+            new_user = User(
+                username=form.username.data,
+                password=password_hash,
+                privilege=form.privilege.data,
+                personne_id=new_agent.id
+            )
+            db.session.add(new_agent, new_user)
+            db.session.commit()
+    return render_template('creer_agent.html', title='NouveauAgent', form=form)
+
+@app.route('/projet/<int:projet_id>')
+def AfficherProjet(projet_id):
+    projet = FicheSuivi.query.get_or_404(projet_id)
+    return render_template('projet.html', title='Projet', projet=projet)
