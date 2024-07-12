@@ -2,6 +2,8 @@ from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, CheckConstraint
 from sqlalchemy.orm import relationship
 from app import db
+from flask_login import UserMixin
+from datetime import datetime, timezone
 
 Base = db.Model
 
@@ -10,7 +12,7 @@ class Personne(Base):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nom = db.Column(db.String(45), index=True)
     prenom = db.Column(db.String(45), index=True)
-    adresse = db.Column(db.String(45), index=True, unique=True)
+    adresse = db.Column(db.String(100), index=True, unique=True)
     tel = db.Column(db.String(10), index=True, unique=True)
     gsm = db.Column(db.String(10), index=True, unique=True)
     email = db.Column(db.String(255), index=True, unique=True)
@@ -24,11 +26,11 @@ class Personne(Base):
     def __repr__(self):
         return f'<Personne {self.id} - {self.email}>'
 
-class User(Base):
+class User(UserMixin, Base):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(45), index=True, unique=True)
-    password = db.Column(db.String(45), index=True, unique=True)
+    password = db.Column(db.String(255), index=True, unique=True)
     personne_id = db.Column(db.Integer, ForeignKey('personne.id'), nullable=False)
     #agent_id = db.Column(db.Integer, ForeignKey('agent.id'), nullable=False)
     privilege = db.Column(db.String(10), nullable=False)
@@ -55,7 +57,7 @@ class User(Base):
         self.privilege = privilege
         return self            
 
-
+    
 
 # class Agent(Base):
 #     __tablename__ = 'agent'
@@ -89,7 +91,7 @@ class Societe(Base):
     __tablename__ = 'societe'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nom = db.Column(db.String(45), index=True, unique=True)
-    type_societe = db.Column(db.String(45), index=True)
+    type = db.Column(db.String(45), index=True)
     domaine = db.Column(db.String(45), index=True)
     tel1 = db.Column(db.String(45), index=True, unique=True)
     tel2 = db.Column(db.String(45), index=True, unique=True)
@@ -114,20 +116,17 @@ class Societe(Base):
 class FicheSuivi(Base):
     __tablename__ = 'fiche_suivi'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    FSN = db.Column(db.String, index=True, unique=True)
+    FSN = db.Column(db.String(7), index=True, unique=True)
     projet = db.Column(db.String(255), index=True, unique=True)
     adresse = db.Column(db.String(255), index=True, unique=True)
     prestation_id = db.Column(db.Integer, ForeignKey('prestation.id'))
     ouvrage_id = db.Column(db.Integer, ForeignKey('ouvrage.id'))
     client_id = db.Column(db.Integer, ForeignKey('client.id'))
     date_debut = db.Column(db.DateTime, index=True, default=datetime.now(timezone.utc))
-    projet_id = db.Column(db.Integer, ForeignKey('projet.id'))
-    #agent_id = db.Column(db.Integer, ForeignKey('agent.id'))
     user_id = db.Column(db.Integer, ForeignKey('user.id'))
     client = relationship('Client', back_populates='fiche_suivi')
     user = relationship('User', back_populates='fiche_suivi')
     devis = relationship('Devis', back_populates='fiche_suivi')
-    projet = relationship('Projet', back_populates='fiche_suivi')
 
     def __repr__(self):
         return f'<FicheSuivi {self.id}>'

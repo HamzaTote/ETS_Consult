@@ -2,22 +2,30 @@
 <title>Connexion</title>
 
 {% block content %}
-    <div style="width: 30%; margin: auto; text-align: center; margin-top: 200px;">
+    <div style="width: 30%; margin: auto; text-align: center; margin-top: 200px;border: 1px solid #c9c4c4; border-radius: 10px;
+                padding: 50px 30px 50px 30px;">
         <h1>Se connecter</h1><br>
-        <form action="" method="post" novalidate>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form action="/login" method="post" novalidate>
             {{ form.hidden_tag() }}
             <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="floatingUsername" placeholder="Username" 
+                <input type="text" class="form-control" id="floatingUsername" placeholder="Nom d'utilisateur" 
                     name="{{ form.username.name }}" value="{{ form.username._value() }}">
                 <label for="floatingUsername">{{ form.username.label.text }}</label>
             </div>
             <div class="form-floating">
-                <input type="password" class="form-control" id="floatingPassword" placeholder="Password" 
+                <input type="password" class="form-control" id="floatingPassword" placeholder="Mot de passe" 
                     name="{{ form.password.name }}" value="{{ form.password._value() }}" autocomplete="off">
                 <label for="floatingPassword">{{ form.password.label.text }}</label>
             </div>
             <br>
-            <button class="btn btn-lg btn-primary" type="submit">Connexion</button>
+            <button class="btn btn-lg btn-dark" type="submit">Connexion</button>
         </form>
     </div>
 {% endblock %}

@@ -1,16 +1,19 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1 style="margin-left: 100px;">{{projet.nom}}</h1>
-    <div class="infos">
-        <p>Numero de la fiche de suivi:</p>
-        <p>Nom du projet:</p>
-        <p>adresse:</p>
-        <p>Date:</p>
-        <p>client:</p>
-        <p>Agent affecté:</p>
+    <h1 style="text-align: center;">{{projet.projet}}</h1>
+    <div id="infos_projet" style="margin: 0px 1200px 70px 100px;">
+        <h2 class="text-secondary" style="margin-bottom: 40px;">Informations du projet</h2>
+        <ul class="project-info">
+            <li><p><strong>Numero de la fiche de suivi:</strong> {{ projet.FSN }}</p></li>
+            <li><p><strong>Nom du projet:</strong> {{ projet.projet }}</p></li>
+            <li><p><strong>Adresse:</strong> {{ projet.adresse }}</p></li>
+            <li><p><strong>Date:</strong> {{ projet.date }}</p></li>
+            <li><p><strong>Client:</strong> {{ projet.client.name }}</p></li>
+            <li><p><strong>Agent affecté:</strong> {{ projet.user.username }}</p></li>
+        </ul>
     </div>
-    <div class="infos">
-        
+    <div id="devis" style="margin: 0px 1200px 0px 100px;">
+        <h2 class="text-secondary">Devis</h2>  
     </div>
 {% endblock %}

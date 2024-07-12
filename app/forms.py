@@ -9,8 +9,6 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Sign In')
 
 class UserCreation(FlaskForm):
-    nom = StringField('Nom', validators=[DataRequired(), Length(min=2, max=45)])
-    prenom = StringField('Prenom', validators=[DataRequired(), Length(min=2, max=45)])
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=45)])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8, max=45)])
     privilege = SelectField('Privilege', choices=[('admin', 'admin'), ('agent', 'agent')])
@@ -52,7 +50,7 @@ class ClientCreation(FlaskForm):
     fax = StringField('Fax')
     email = StringField('Email')
     
-class AgentCreation(FlaskForm):
+class UserCreation(FlaskForm):
     nom = StringField('Nom')
     prenom = StringField('Prenom')
     adresse = StringField('Adresse')

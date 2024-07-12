@@ -7,16 +7,16 @@
         <form action="{{ url_for('AjouterProjet') }}" method="post">
             {{ form.hidden_tag() }}
             <div id="projet" >
-                <h2 class="text-secondary">Infos du projet:</h2>
+                <h2 class="text-secondary">Informations du projet:</h2>
                 <div>
                     <label class="col-form-label mt-4" for="inputDefault">Nom:</label>
                     <input type="text" class="form-control" placeholder="Nom du projet" id="nom" 
-                        value="{{ form.nom.data }}">
+                        value="{{ form.nom.data|default('', true) }}">
                 </div>
                 <div>
                     <label class="col-form-label mt-4" for="inputDefault">Adresse:</label>
                     <input type="text" class="form-control" placeholder="Adresse du projet" id="adresse"
-                        value="{{ form.adresse.data }}">
+                        value="{{ form.adresse.data|default('', true) }}">
                 </div>
                 <div>
                     <label class="col-form-label mt-4" for="inputDefault">Agent affecté:</label>
@@ -33,42 +33,42 @@
                 <div>
                     <label class="col-form-label mt-4" for="inputDefault">Nom:</label>
                     <input type="text" class="form-control" placeholder="Nom du client" id="nom" 
-                        value="{{ form2.nom.data }}">
+                        value="{{ form2.nom.data|default('', true) }}">
                 </div>
                 <div>
                     <label class="col-form-label mt-4" for="inputDefault">Type de société:</label>
                     <input type="text" class="form-control" placeholder="Type de société" id="type_societe" 
-                        value="{{ form2.type_societe.data }}">
+                        value="{{ form2.type_societe.data|default('', true) }}">
                 </div>
                 <div>
                     <label class="col-form-label mt-4" for="inputDefault">Domaine:</label>
                     <input type="text" class="form-control" placeholder="Domaine" id="domaine" 
-                        value="{{ form2.domaine.data }}">
+                        value="{{ form2.domaine.data|default('', true) }}">
                 </div>
                 <div>
                     <label class="col-form-label mt-4" for="inputDefault">Tel 1:</label>
                     <input type="text" class="form-control" placeholder="Tel 1" id="tel1" 
-                        value="{{ form2.tel1.data }}">
+                        value="{{ form2.tel1.data|default('', true) }}">
                 </div>
                 <div>
                     <label class="col-form-label mt-4" for="inputDefault">Tel 2:</label>
                     <input type="text" class="form-control" placeholder="Tel 2" id="tel2" 
-                        value="{{ form2.tel2.data }}">
+                        value="{{ form2.tel2.data|default('', true) }}">
                 </div>
                 <div>
                     <label class="col-form-label mt-4" for="inputDefault">Fax:</label>
                     <input type="text" class="form-control" placeholder="Fax" id="fax" 
-                        value="{{ form2.fax.data }}">
+                        value="{{ form2.fax.data|default('', true) }}">
                 </div>
                 <div>
                     <label class="col-form-label mt-4" for="inputDefault">Email:</label>
                     <input type="text" class="form-control" placeholder="Email" id="email" 
-                        value="{{ form2.email.data }}">
+                        value="{{ form2.email.data|default('', true) }}">
                 </div>
             </div>
             <div id="btn" style="margin-top: 50px; float: right;">
                 <button type="button" class="btn btn-secondary" onclick="window.history.back();">Annuler</button>
-                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                <button type="submit" class="btn btn-dark">Enregistrer</button>
             </div>
         </form>
     </div><br><br><br><br><br><br>

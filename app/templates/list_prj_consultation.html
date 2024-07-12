@@ -18,7 +18,7 @@
                 {% for fiche in fiches %}
                 <tr>
                     <td>{{ fiche.FSN }}</td>
-                    <td>{{ fiche.nom }}</td>
+                    <td><a href="{{ url_for('AfficherProjet', id=fiche.id) }}">{{ fiche.projet }}</a></td>
                     <td>{{ fiche.client.name }}</td>
                     <td>{{ fiche.user.username }}</td>
                     <td>

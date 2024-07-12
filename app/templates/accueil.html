@@ -4,14 +4,11 @@
 </head>
 {% block content %}
     
-    <div>
-        <div class="d-grid gap-2" style="margin: 300px 500px 9px 500px;">
-            <a href="{{ url_for('List_FichesSuivi') }}" class="btn btn-lg btn-primary" role="button">
-                Projets en phase de consulation
-            </a>
-        </div>
-        <div class="d-grid gap-2" style="margin: 0px 500px 20px 500px;">
-            <a href="" class="btn btn-lg btn-primary" role="button">Projets en phase de production</a>
+    <div style="margin: 0px 1000px 500px 500px; width: 50%; padding: 50px; border: 1px solid #c9c4c4; border-radius: 10px; text-align: center; margin-top: 50px;">
+        <h1 style="margin-bottom: 20px;">Projets</h1>
+        <div class="d-grid gap-2" >
+            <a href="{{ url_for('List_FichesSuivi') }}" class="btn btn-lg btn-dark" role="button">Projets en phase de consulation</a>
+            <a href="" class="btn btn-lg btn-dark" role="button">Projets en phase de production</a>
             <a href="{{ url_for('AjouterProjet') }}" class="btn btn-lg btn-secondary" role="button">Nouveau projet +</a>
         </div>
     </div>
