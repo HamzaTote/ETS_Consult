@@ -83,28 +83,27 @@ def AjouterProjet():
 @app.route('/CreerAgent', methods=['GET', 'POST'])
 def CreerAgent():
     form = UserCreation()
-    if current_user.is_authenticated:
-        if current_user.privilege == 'admin':
-            if form.validate_on_submit():
-                new_personne = Personne(
-                    nom=form.nom.data,
-                    prenom=form.prenom.data,
-                    adresse=form.adresse.data,
-                    tel=form.tel.data,
-                    gsm=form.gsm.data,
-                    email=form.email.data
-                )
-                db.session.add(new_personne)
-                db.session.commit()
-                password_hash = generate_password_hash(form.password.data)
-                new_user = User(
-                    username=form.username.data,
-                    password=password_hash,
-                    privilege=form.privilege.data,
-                    personne_id=new_personne.id
-                )
-                db.session.add(new_user)
-                db.session.commit()
+    if form.validate_on_submit():
+        print("form validated")
+        new_personne = Personne(
+            nom=form.nom.data,
+            prenom=form.prenom.data,
+            adresse=form.adresse.data,
+            tel=form.tel.data,
+            gsm=form.gsm.data,
+            email=form.email.data
+        )
+        db.session.add(new_personne)
+        db.session.commit()
+        password_hash = generate_password_hash(form.password.data)
+        new_user = User(
+            username=form.username.data,
+            password=password_hash,
+            privilege=form.privilege.data,
+            personne_id=new_personne.id
+        )
+        db.session.add(new_user)
+        db.session.commit()
     return render_template('creer_agent.html', title='NouveauAgent', form=form)
 
 @login_required

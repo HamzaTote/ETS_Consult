@@ -46,7 +46,6 @@ class UserCreation(FlaskForm):
     tel = StringField('Tel')
     gsm = StringField('GSM')
     email = StringField('Email')
-    profession = StringField('Profession')
     username = StringField('Username')
     password = PasswordField('Password')
     privilege = SelectField('Privilege', choices=[('admin', 'admin'), ('agent', 'agent')])

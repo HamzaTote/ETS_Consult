@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <head>
+    <!-- <head>
     <style>
                 body {
             font-family: Arial, sans-serif;
@@ -56,11 +56,79 @@
     </style>
 </head>
 <body>
-    <div class="dashboard">
+    <div class="dashboard"> -->
         <!-- <h1>ERP BET</h1> -->
-            <div class="image-container">
+            <!-- <div class="image-container">
                 <img src="/static/img/index.jpg" alt="ets-consult">
             </div>
     </div>
+</body> -->
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .dashboard {
+            text-align: center;
+            padding: 50px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 50px auto;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-image {
+            width: 100%;
+            height: auto;
+            max-height: 500px; /* Limite la hauteur maximale de l'image */
+            object-fit: cover; /* Maintient le ratio de l'image et la couvre */
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .dashboard-image:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .dashboard-image {
+                max-height: 300px; /* Ajuste la hauteur maximale pour les petits écrans */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- <h1>ERP BET</h1> -->
+        <div class="image-container">
+            <img src="/static/img/index.jpg" alt="ets-consult" class="dashboard-image">
+        </div>
+    </div>
 </body>
+
 {% endblock %}
