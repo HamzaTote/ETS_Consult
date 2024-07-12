@@ -1,17 +1,54 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <head>
+        <style>
+            .table-active{
+                border-bottom: 1px solid black;
+            }
+        </style>
+    </head>
     <h1 style="text-align: center;">{{projet.projet}}</h1>
-    <div id="infos_projet" style="margin: 0px 1200px 70px 100px;">
-        <h2 class="text-secondary" style="margin-bottom: 40px;">Informations du projet</h2>
-        <ul class="project-info">
+    <h2 class="text-secondary" style="margin-bottom: 40px; padding-left: 70px;">Informations du projet</h2>
+    <div id="container" style="margin: 0px 1200px 70px 100px; display: flex; align-items: right;">
+        <table class="table table-hover">
+            <tbody>
+                <tr class="table-active">
+                    <th scope="row">Numéro de la fiche de suivi</th>
+                    <td>{{ projet.FSN }}</td>
+                </tr>
+                <tr class="table-active">
+                    <th scope="row">Nom du projet</th>
+                    <td>{{ projet.projet }}</td>
+                </tr>
+                <tr class="table-active">
+                    <th scope="row">Adresse</th>
+                    <td>{{ projet.adresse }}</td>
+                </tr>
+                <tr class="table-active">
+                    <th scope="row">Date</th>
+                    <td>{{ projet.date }}</td>
+                </tr>
+                <tr class="table-active">
+                    <th scope="row">Client</th>
+                    <td>{{ projet.client.name }}</td>
+                </tr>
+                <tr class="table-active">
+                    <th scope="row">Agent affecté</th>
+                    <td>{{ projet.user.username }}</td>
+                </tr>
+
+            </tbody>
+        </table>
+        </div>
+        <!-- <ul class="project-info">
             <li><p><strong>Numero de la fiche de suivi:</strong> {{ projet.FSN }}</p></li>
             <li><p><strong>Nom du projet:</strong> {{ projet.projet }}</p></li>
             <li><p><strong>Adresse:</strong> {{ projet.adresse }}</p></li>
             <li><p><strong>Date:</strong> {{ projet.date }}</p></li>
             <li><p><strong>Client:</strong> {{ projet.client.name }}</p></li>
             <li><p><strong>Agent affecté:</strong> {{ projet.user.username }}</p></li>
-        </ul>
+        </ul> -->
     </div>
     <div id="devis" style="margin: 0px 1200px 0px 100px;">
         <h2 class="text-secondary">Devis</h2>  

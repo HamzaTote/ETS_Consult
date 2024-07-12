@@ -4,7 +4,7 @@
     <br>
     <h1 style="margin-left: 100px;">Nouveau Agent</h1><br>
     <div style="margin: 0px 1200px 0px 100px;">
-        <form method="POST, GET" action="{{ url_for('CreerAgent') }}">
+        <form method="POST" action="{{ url_for('CreerAgent') }}">
             {{ form.csrf_token() }}
             {{ form.hidden_tag() }}
             <div>

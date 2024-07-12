@@ -8,17 +8,6 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8, max=45)])
     submit = SubmitField('Sign In')
 
-class UserCreation(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=45)])
-    password = PasswordField('Password', validators=[DataRequired(), Length(min=8, max=45)])
-    privilege = SelectField('Privilege', choices=[('admin', 'admin'), ('agent', 'agent')])
-    submit = SubmitField('Créer utilisateur')
-
-    def validate_username(self, username):
-        user = User.query.filter_by(username=username.data).first()
-        if user:
-            raise ValidationError('That username is taken. Please choose a different one.')
-
 class UserModification(FlaskForm):
     nom = StringField('Nom')
     prenom = StringField('Prenom')
