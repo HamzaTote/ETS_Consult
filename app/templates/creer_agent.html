@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
+{% from 'macros.html' import render_field, render_select  %}
 
 {% block content %}
     <br>
     <h1 style="margin-left: 100px;">Nouveau Agent</h1><br>
     <div style="margin: 0px 1200px 0px 100px;">
-        <form method="POST" action="{{ url_for('CreerAgent') }}">
-            {{ form.csrf_token() }}
+        <!-- <form method="POST" action="{{ url_for('CreerAgent') }}">
             {{ form.hidden_tag() }}
             <div>
                 <label for="nom" class="form-label">Nom:</label>
@@ -57,6 +57,22 @@
             <div id="btn" style="margin-top: 50px; float: right;">
                 <button type="button" class="btn btn-secondary" onclick="window.location.href='/Accueil'">Annuler</button>
                 <button type="submit" value="Submit" class="btn btn-primary">Créer</button>
+            </div>
+        </form> -->
+        <form method="POST" action="{{ url_for('CreerAgent') }}">
+            {{ form.hidden_tag() }}
+            {{ render_field(form.nom, "Nom", "text", "Nom") }}
+            {{ render_field(form.prenom, "Prénom", "text", "Prénom") }}
+            {{ render_field(form.adresse, "Adresse", "text", "Adresse") }}
+            {{ render_field(form.tel, "Téléphone", "text", "Téléphone") }}
+            {{ render_field(form.gsm, "GSM", "text", "GSM") }}
+            {{ render_field(form.email, "Email", "email", "Email") }}
+            {{ render_field(form.username, "Nom d'utilisateur", "text", "Nom d'utilisateur") }}
+            {{ render_field(form.password, "Mot de passe", "password", "Mot de passe") }}
+            {{ render_select(form.privilege, "Rôle", form.privilege.choices) }}
+            <div id="btn" style="margin-top: 50px; float: right;">
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='/Accueil'">Annuler</button>
+                {{ form.submit(class="btn btn-primary") }}
             </div>
         </form>
     </div><br><br><br><br><br><br>

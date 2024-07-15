@@ -49,4 +49,5 @@ class UserCreation(FlaskForm):
     username = StringField('Username')
     password = PasswordField('Password')
     privilege = SelectField('Privilege', choices=[('admin', 'admin'), ('agent', 'agent')])
+    submit = SubmitField('Créer')
     

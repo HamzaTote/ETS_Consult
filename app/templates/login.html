@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from 'macros.html' import render_floating_field %}
 <title>Connexion</title>
 
 {% block content %}
@@ -12,9 +13,9 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <form action="/login" method="post" novalidate>
+        <form action="/login" method="POST" novalidate>
             {{ form.hidden_tag() }}
-            <div class="form-floating mb-3">
+            <!-- <div class="form-floating mb-3">
                 <input type="text" class="form-control" id="floatingUsername" placeholder="Nom d'utilisateur" 
                     name="{{ form.username.name }}" value="{{ form.username._value() }}">
                 <label for="floatingUsername">{{ form.username.label.text }}</label>
@@ -25,7 +26,11 @@
                 <label for="floatingPassword">{{ form.password.label.text }}</label>
             </div>
             <br>
-            <button class="btn btn-lg btn-dark" type="submit">Connexion</button>
+            <button class="btn btn-lg btn-dark" type="submit">Connexion</button> -->
+            {{ render_floating_field(form.username, "Nom d'utilisateur") }}
+            {{ render_floating_field(form.password, "Mot de passe", type="password") }}
+            <br>
+            {{ form.submit(class="btn btn-lg btn-dark") }}
         </form>
     </div>
 {% endblock %}

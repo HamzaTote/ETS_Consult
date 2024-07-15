@@ -1,0 +1,46 @@
+<!-- agent creation related -->
+
+{# macros.html #}
+{% macro render_field(field, label, type="text", placeholder="") %}
+<div class="mb-3">
+    <label for="{{ field.id }}" class="form-label">{{ label }}</label>
+    {{ field(class="form-control", type=type, placeholder=placeholder) }}
+    {% if field.errors %}
+        <div class="invalid-feedback">
+            {% for error in field.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{% macro render_select(field, label, options) %}
+<div class="mb-3">
+    <label for="{{ field.id }}" class="form-label">{{ label }}</label>
+    <select class="form-select" id="{{ field.id }}" name="{{ field.name }}">
+        {% for value, text in options %}
+            <option value="{{ value }}" {% if field.data == value %}selected{% endif %}>{{ text }}</option>
+        {% endfor %}
+    </select>
+</div>
+{% endmacro %}
+
+
+<!-- login related -->
+
+{# macros.html #}
+{% macro render_floating_field(field, placeholder, type="text") %}
+<div class="form-floating mb-3">
+    <input type="{{ type }}" class="form-control" id="floating{{ field.id }}" placeholder="{{ placeholder }}"
+           name="{{ field.name }}" value="{{ field._value() }}">
+    <label for="floating{{ field.id }}">{{ field.label.text }}</label>
+    {% if field.errors %}
+        <div class="invalid-feedback">
+            {% for error in field.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endmacro %}

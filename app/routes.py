@@ -4,7 +4,8 @@ from app.forms import LoginForm, ProjectCreation, ClientCreation, UserCreation
 from app.models import User, FicheSuivi, Client, Societe, Personne
 from flask_login import current_user, login_user, logout_user, login_required, login_manager
 from datetime import datetime
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 
 
@@ -27,9 +28,13 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash('Nom d\'utilisateur ou mot de passe incorrect', 'danger')
+        if user is None:
+            flash('Incorrect username.', 'danger')
             return redirect(url_for('login'))
+        elif not check_password_hash(user.password, form.password.data):
+            flash('Incorrect password.', 'danger')
+            return redirect(url_for('login'))
+        print("user validated")
         login_user(user)
         return redirect(url_for('Accueil'))
     return render_template('login.html', title='Sign In', form=form)
