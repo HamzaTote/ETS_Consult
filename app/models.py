@@ -87,12 +87,20 @@ class Client(Base):
 
     def __repr__(self):
         return f'<Client {self.id}>'
+    
+    def get_client_id(self):
+        if self.societe:
+            return self.societe.id
+        elif self.personne:
+            return self.personne.id
+        else:
+            return None
 
 class Societe(Base):
     __tablename__ = 'societe'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     nom = db.Column(db.String(45), index=True, unique=True)
-    type = db.Column(db.String(45), index=True)
+    type_societe = db.Column(db.String(45), index=True)
     domaine = db.Column(db.String(45), index=True)
     tel1 = db.Column(db.String(45), index=True, unique=True)
     tel2 = db.Column(db.String(45), index=True, unique=True)
@@ -132,6 +140,7 @@ class FicheSuivi(Base):
     def __repr__(self):
         return f'<FicheSuivi {self.id}>'
     
+    @classmethod
     def generate_fsn(self):
         current_year = datetime.now().year % 100
         last_project = FicheSuivi.query.filter(FicheSuivi.FSN.endswith(f'/{current_year}')).order_by(FicheSuivi.id.desc()).first()

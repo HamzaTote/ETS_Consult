@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br><br>
+<h1 style="margin-left: 100px;">Liste des agents</h1>
+<br><br>
+<div style="margin: 0 30px 0 30px;">
+    <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Nom</th>
+            <th scope="col">Prenom</th>
+            <th scope="col">Adresse</th>
+            <th scope="col">Tel</th>
+            <th scope="col">GSM</th>
+            <th scope="col">Email</th>
+            <th scope="col">Rôle</th>
+          </tr>
+        </thead>
+        <tbody class="table-active">
+            {% for agent in agents %}
+            <tr>
+                <td>{{ agent.personne.nom }}</td>
+                <td>{{ agent.personne.prenom }}</td>
+                <td>{{ agent.personne.adresse }}</td>
+                <td>{{ agent.personne.tel }}</td>
+                <td>{{ agent.personne.gsm }}</td>
+                <td>{{ agent.personne.email }}</td>
+                <td>{{ agent.privilege }}</td>
+                <td><a href="{{ url_for('ModifierAgent', id=agent.id) }}" class="btn btn-secondary">Modifier</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+</div>
+{% endblock %}

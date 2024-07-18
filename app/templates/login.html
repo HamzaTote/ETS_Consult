@@ -1,36 +1,42 @@
-{% extends "base.html" %}
+
+{% extends 'base.html' %}
 {% from 'macros.html' import render_floating_field %}
-<title>Connexion</title>
 
 {% block content %}
-    <div style="width: 30%; margin: auto; text-align: center; margin-top: 200px;border: 1px solid #c9c4c4; border-radius: 10px;
-                padding: 50px 30px 50px 30px;">
-        <h1>Se connecter</h1><br>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        <form action="/login" method="POST" novalidate>
-            {{ form.hidden_tag() }}
-            <!-- <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="floatingUsername" placeholder="Nom d'utilisateur" 
-                    name="{{ form.username.name }}" value="{{ form.username._value() }}">
-                <label for="floatingUsername">{{ form.username.label.text }}</label>
-            </div>
-            <div class="form-floating">
-                <input type="password" class="form-control" id="floatingPassword" placeholder="Mot de passe" 
-                    name="{{ form.password.name }}" value="{{ form.password._value() }}" autocomplete="off">
-                <label for="floatingPassword">{{ form.password.label.text }}</label>
-            </div>
-            <br>
-            <button class="btn btn-lg btn-dark" type="submit">Connexion</button> -->
-            {{ render_floating_field(form.username, "Nom d'utilisateur") }}
-            {{ render_floating_field(form.password, "Mot de passe", type="password") }}
-            <br>
-            {{ form.submit(class="btn btn-lg btn-dark") }}
-        </form>
-    </div>
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
+        <title>Connexion</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+            body {
+                background-image: url("static/img/index2.jpg");
+                background-attachment: fixed;
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-color: #212529;
+            }
+        </style>
+    </head>
+    <body>
+        <div style="width: 30%; margin: auto; text-align: center; margin-top: 200px;border: 1px solid #c9c4c4; border-radius: 10px;
+                padding: 50px 30px 50px 30px; background-color: #fff; overflow: hidden;">
+            <h1>Se connecter</h1><br>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            <form action="{{ url_for('login') }}" method="POST">
+                {{ form.hidden_tag() }}
+                {{ render_floating_field(form.username, "Nom d'utilisateur") }}
+                {{ render_floating_field(form.password, "Mot de passe", type="password") }}
+                <br>
+                {{ form.submit(class="btn btn-lg btn-dark") }}
+            </form>
+        </div>
+    </body>
 {% endblock %}
