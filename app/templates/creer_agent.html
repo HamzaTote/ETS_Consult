@@ -5,60 +5,7 @@
     <br>
     <h1 style="margin-left: 100px;">Nouveau Agent</h1><br>
     <div style="margin: 0px 1200px 0px 100px;">
-        <!-- <form method="POST" action="{{ url_for('CreerAgent') }}">
-            {{ form.hidden_tag() }}
-            <div>
-                <label for="nom" class="form-label">Nom:</label>
-                <input type="text" class="form-control" id="nom" placeholder="Nom"
-                {% if form.nom.data %}value="{{ form.nom.data }}"{% endif %}>
-            </div>
-            <div class="mb-3">
-                <label for="prenom" class="form-label">Prénom:</label>
-                <input type="text" class="form-control" id="prenom" placeholder="Prénom"
-                {% if form.prenom.data %}value="{{ form.prenom.data }}"{% endif %}>
-            </div>
-            <div>
-                <label for="adresse" class="form-label">Adresse:</label>
-                <input type="text" class="form-control" id="adresse" placeholder="Adresse"
-                {% if form.adresse.data %}value="{{ form.adresse.data }}"{% endif %}>
-            </div>
-            <div>
-                <label for="tel" class="form-label">Téléphone:</label>
-                <input type="text" class="form-control" id="tel" placeholder="Téléphone"
-                    {% if form.tel.data %}value="{{ form.tel.data }}"{% endif %}>
-            </div>
-            <div>
-                <label for="gsm" class="form-label">GSM:</label>
-                <input type="text" class="form-control" id="gsm" placeholder="GSM"
-                    {% if form.gsm.data %}value="{{ form.gsm.data }}"{% endif %}>
-            </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Email:</label>
-                <input type="email" class="form-control" id="email" placeholder="Email"
-                    {% if form.email.data %}value="{{ form.email.data }}"{% endif %}>
-            </div>
-            <div class="mb-3">
-                <label for="username" class="form-label">Nom d'utilisateur:</label>
-                <input type="text" class="form-control" id="username" placeholder="Nom d'utilisateur"
-                {% if form.username.data %}value="{{ form.username.data }}"{% endif %}>
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Mot de passe:</label>
-                <input type="password" class="form-control" id="password" placeholder="Mot de passe"
-                {% if form.password.data %}value="{{ form.password.data }}"{% endif %}>
-            </div>
-            <div>
-                <label for="role" class="form-label">Rôle:</label>
-                <select class="form-select" id="role">
-                    <option value="admin" {% if form.privilege.data == 'admin' %}selected{% endif %}>Admin</option>
-                    <option value="agent" {% if form.privilege.data == 'agent' %}selected{% endif %}>Agent</option>
-                </select>
-            </div>
-            <div id="btn" style="margin-top: 50px; float: right;">
-                <button type="button" class="btn btn-secondary" onclick="window.location.href='/Accueil'">Annuler</button>
-                <button type="submit" value="Submit" class="btn btn-primary">Créer</button>
-            </div>
-        </form> -->
+
         <form method="POST" action="{{ url_for('CreerAgent') }}">
             {{ form.hidden_tag() }}
             {{ render_field(form.nom, "Nom", "text", "Nom") }}
@@ -75,5 +22,6 @@
                 {{ form.submit(class="btn btn-primary") }}
             </div>
         </form>
+        
     </div><br><br><br><br><br><br>
 {% endblock %}

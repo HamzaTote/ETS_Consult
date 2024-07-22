@@ -6,6 +6,7 @@
     <h1 style="margin-left: 100px;">Nouveau client</h1>
         <form action="{{ url_for('CreerClient') }}" method="POST" class="container" style="margin-top: 75px;">
             {{ form.hidden_tag() }}
+            {{ form2.hidden_tag() }}
             <div style="display: flex; justify-content: flex-end; flex-direction: row; gap: 100px; ">
                 <div id="Société" style="flex: 1;">
                     <h2 class="text-secondary">Infos de la sociéte:</h2>
@@ -21,6 +22,7 @@
                     <h2 class="text-secondary">Infos du contact:</h2>
                     {{ render_input(form.nom, "Nom") }}
                     {{ render_input(form.prenom, "Prénom") }}
+                    {{ render_input(form.adresse, "Adresse") }}
                     {{ render_input(form.tel, "Tel") }}
                     {{ render_input(form.gsm, "GSM") }}
                     {{ render_input(form.email, "Email", type="email") }}

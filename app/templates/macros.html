@@ -30,6 +30,20 @@
 </div>
 {% endmacro %}
 
+{% macro render_textarea(field, placeholder) %}
+<div>
+    <label for="{{ field.id }}" class="form-label mt-4">{{ field.label.text }}</label>
+    <textarea id="{{ field.id }}" name="{{ field.name }}" class="form-control" placeholder="{{ placeholder }}" rows="3">{{ field._value() }}</textarea>
+    {% if field.errors %}
+        <div class="invalid-feedback">
+            {% for error in field.errors %}
+                <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>    
+{% endmacro %}
+
 <!-- select field -->
 
 {% macro render_select(field, label, options) %}

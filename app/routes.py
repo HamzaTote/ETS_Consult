@@ -1,7 +1,7 @@
 from app import app, db
 from flask import render_template, flash, redirect, url_for, current_app
-from app.forms import LoginForm, ProjectCreation, SocieteCreation, UserCreation, ContactCreation, UserModification
-from app.models import User, FicheSuivi, Client, Societe, Personne
+from app.forms import LoginForm, ProjectCreation, SocieteCreation, UserCreation, ContactCreation, UserModification, PrestationCreation
+from app.models import User, FicheSuivi, Client, Societe, Personne, Prestation
 from flask_login import current_user, login_user, logout_user, login_required, login_manager
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -19,6 +19,7 @@ def admin_required(func):
     return wrapper
 
 
+# login related
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -37,6 +38,16 @@ def login():
     return render_template('login.html', title='Sign In', form=form)
 
 
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
+
+
+
+
+
 
 #Accueil
 @login_required
@@ -44,28 +55,13 @@ def login():
 def Accueil():
     return render_template('Accueil.html', title='Accueil')
 
-@login_required
-@app.route('/FichesSuivi')
-def List_FichesSuivi():
-    fiche_suivi = FicheSuivi.query.all()
-    return render_template('list_prj_consultation.html', title='Fiches de suivi', fiches=fiche_suivi)
 
-@login_required
-@app.route('/liste_clients')
-def ListClients():
-    clients = Client.query.all()
-    for client in clients:
-        if client.societe:
-            return client.societe
-        else:
-            return client.personne
-    return render_template('list_clients.html', title='Clients', clients=clients)
 
-@login_required
-@app.route('/liste_agents')
-def ListAgents():
-    agents = User.query.all()
-    return render_template('list_agents.html', title='Agents', agents=agents)
+
+
+
+
+# project related
 
 @login_required
 @app.route('/NouveauProjet', methods=['GET', 'POST'])
@@ -96,13 +92,50 @@ def AjouterProjet():
     return render_template('newproject.html', title='NouveauProjet', form=form, form2=form2)
 
 @login_required
+@app.route('/FichesSuivi')
+def List_FichesSuivi():
+    fiche_suivi = FicheSuivi.query.all()
+    return render_template('list_prj_consultation.html', title='Fiches de suivi', fiches=fiche_suivi)
+
+@login_required
+@app.route('/projet/<int:id>', methods=['GET', 'POST'])
+def AfficherProjet(id):
+    projet = FicheSuivi.query.get_or_404(id)
+    prestations = Prestation.query.filter_by(fiche_suivi_id = id).all()
+    return render_template('afficher_projet.html', title='Projet', projet=projet, prestations=prestations, fiche_suivi_id=id)
+
+@login_required
+@app.route('/creer_prestation/<int:fiche_suivi_id>', methods=['GET', 'POST'])
+def CreerPrestation(fiche_suivi_id):
+    form = PrestationCreation()
+    if form.validate_on_submit():
+        new_prestation = Prestation(
+            fiche_suivi_id=fiche_suivi_id,
+            type_prestation=form.type.data,
+            description=form.description.data,
+            code = form.code.data
+        )
+        db.session.add(new_prestation)
+        db.session.commit()
+        return redirect(url_for('AfficherProjet', id=fiche_suivi_id))
+    return render_template('creer_prestation.html', title='Nouvelle Prestation', form=form, fiche_suivi_id=fiche_suivi_id)
+
+
+
+
+
+
+
+# client related
+
+@login_required
 @app.route('/CreerClient', methods=['GET', 'POST'])
 def CreerClient():
     form = ContactCreation()
     form2 = SocieteCreation()
     new_personne = None
     new_societe = None
-    if form.validate_on_submit() and form2.validate_on_submit():
+    if (form.validate_on_submit() and form2.validate_on_submit()) or (form.validate_on_submit() or form2.validate_on_submit()):
         existing_personne = Personne.query.filter(
             (Personne.email == form.email.data) | 
             (Personne.tel == form.tel.data)
@@ -154,7 +187,26 @@ def CreerClient():
         print("Form2 Errors: ", form2.errors)
 
     return render_template('nouveau_client.html', title='NouveauClient', form=form, form2=form2)
-           
+
+@login_required
+@app.route('/liste_clients')
+def ListClients():
+    clients = Client.query.all()
+    for client in clients:
+        if client.societe:
+            return client.societe
+        else:
+            return client.personne
+    return render_template('list_clients.html', title='Clients', clients=clients)
+
+
+
+
+
+
+
+
+# user related
 
 @login_required
 @admin_required
@@ -218,9 +270,8 @@ def ModifierAgent(id):
     return render_template('modifier_agent.html', title='ModifierAgent', form=form)   
 
 @login_required
-@app.route('/projet/<int:id>', methods=['GET', 'POST'])
-def AfficherProjet(id):
-    projet = FicheSuivi.query.get_or_404(id)
-    return render_template('afficher_projet.html', title='Projet', projet=projet)
-
+@app.route('/liste_agents')
+def ListAgents():
+    agents = User.query.all()
+    return render_template('list_agents.html', title='Agents', agents=agents)
 

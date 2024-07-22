@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
-from wtforms.validators import DataRequired, ValidationError, Length, EqualTo, Email
+from wtforms.validators import DataRequired, ValidationError, Length, EqualTo, Email, Optional
 from app.models import User
 
 class LoginForm(FlaskForm):
@@ -34,7 +34,7 @@ class UserModification(FlaskForm):
             raise ValidationError('Passwords must match.')
         
 class ProjectCreation(FlaskForm):
-    nom = StringField('Projet')
+    nom = StringField('Projet', validators=[DataRequired()])
     adresse = StringField('Adresse')
     agent = SelectField('Agent', choices=[], validators=[DataRequired()])
     client = SelectField('Client', choices=[], validators=[DataRequired()])
@@ -69,3 +69,9 @@ class UserCreation(FlaskForm):
     privilege = SelectField('Privilege', choices=[('admin', 'admin'), ('agent', 'agent')])
     submit = SubmitField('Créer')
     
+
+class PrestationCreation(FlaskForm):
+    type = SelectField('Type', choices=[('Diagnostic', 'Diagnostic'), ('Etudes techniques', 'Etudes techniques'), ('Essais', 'Essais'), ('Etude géotechnique', 'Etude géotechnique'), ('Expertise', 'Expertise'), ('Evaluation', 'Evaluation'), ('Audit', 'Audit'), ('Suivi et réception des travaux', 'Suivi et réception des travaux')])
+    description = StringField('Description')
+    code = StringField('Code', validators=[Optional()])
+    submit = SubmitField('Créer')

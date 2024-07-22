@@ -31,8 +31,7 @@
                 {{ render_input(form.confirm_password, "Confirmer mot de passe", type="password")}}
                 {% if current_user.privilege == 'admin' %}
                     {{ render_input(form.privilege, "Rôle") }}
-                {% endif %}
-
+                {% endif %}                
             </div>
             <div id="btn" style="margin-top: 50px; float: right; padding-bottom: 250px;">
                 <button type="button" class="btn btn-secondary" onclick="window.history.back()">Annuler</button>

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import render_input, render_select, render_textarea %}
+
+{% block content %}
+<head>
+    <title>Nouvelle prestation</title>
+</head>
+<body>
+    <br>
+    <h1 style="margin-left: 100px;">Nouvelle prestation</h1><br>
+    <div style="margin: 0px 1200px 0px 100px;">
+        <form action="{{ url_for('CreerPrestation', fiche_suivi_id = fiche_suivi_id ) }}" method="post">
+            {{ form.hidden_tag() }}
+            <div id="prestation">
+                {{ render_select(form.type, "Type", form.type.choices) }}
+                {{ render_textarea(form.description, "Description") }}
+                {{ render_input(form.code, "Code") }}                
+            </div>
+            <div id="btn" style="margin-top: 50px; float: right; padding-bottom: 250px;">
+                <button type="button" class="btn btn-secondary" onclick="window.history.back()">Annuler</button>
+                <button type="submit" class="btn btn-dark">Créer</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+{% endblock %}

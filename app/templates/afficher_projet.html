@@ -9,8 +9,8 @@
         </style>
     </head>
     <h1 style="text-align: center;">{{projet.projet}}</h1>
-    <h2 class="text-secondary" style="margin-bottom: 40px; padding-left: 70px;">Informations du projet</h2>
-    <div id="container" style="margin: 0px 1200px 70px 100px; display: flex; align-items: right;">
+    <h2 class="text-secondary" style="margin-bottom: 40px; padding-left: 100px;">Informations du projet</h2>
+    <div id="infos" style="margin: 0px 1200px 70px 100px; display: flex; align-items: right;">
         <table class="table table-hover">
             <tbody>
                 <tr class="table-active">
@@ -41,16 +41,38 @@
             </tbody>
         </table>
         </div>
-        <!-- <ul class="project-info">
-            <li><p><strong>Numero de la fiche de suivi:</strong> {{ projet.FSN }}</p></li>
-            <li><p><strong>Nom du projet:</strong> {{ projet.projet }}</p></li>
-            <li><p><strong>Adresse:</strong> {{ projet.adresse }}</p></li>
-            <li><p><strong>Date:</strong> {{ projet.date }}</p></li>
-            <li><p><strong>Client:</strong> {{ projet.client.name }}</p></li>
-            <li><p><strong>Agent affecté:</strong> {{ projet.user.username }}</p></li>
-        </ul> -->
+    </div>
+    <div id="prestations" style="margin: 0px 1200px 0px 100px;">
+        <h2 class="text-secondary">Prestations</h2>
+        {% for prestation in prestations %}
+            <div>
+                <table class="table table-hover">
+                    <tbody>
+                        <tr class="table-active">
+                            <th scope="row">Type</th>
+                            <td>{{ prestation.type_prestation }}</td>
+                        </tr>
+                        <tr class="table-active">
+                            <th scope="row">Description</th>
+                            <td><p>{{ prestation.description | replace("\n", "<br>") |safe }}</p></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
     </div>
     <div id="devis" style="margin: 0px 1200px 0px 100px;">
-        <h2 class="text-secondary">Devis</h2>  
+        <h2 class="text-secondary">Devis</h2>
+        {% for dev in devis %}
+            <div>
+                
+            </div>
+        {% endfor %}
+        <div id="btn" style="margin-top: 50px; float: right; padding-bottom: 250px;">
+            <a type="button" class="btn btn-dark" href="{{ url_for('CreerPrestation', fiche_suivi_id=fiche_suivi_id) }}">Ajouter une préstation</a>
+        </div>
+    </div>
+    <div id="btn" style="margin-top: 50px; float: right; padding-bottom: 250px;">
+        <a type="button" class="btn btn-secondary" onclick="window.history.back()">Retour</a>
     </div>
 {% endblock %}

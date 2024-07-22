@@ -128,14 +128,14 @@ class FicheSuivi(Base):
     FSN = db.Column(db.String(7), index=True, unique=True)
     projet = db.Column(db.String(255), index=True, unique=True)
     adresse = db.Column(db.String(255), index=True, unique=True)
-    prestation_id = db.Column(db.Integer, ForeignKey('prestation.id'))
     ouvrage_id = db.Column(db.Integer, ForeignKey('ouvrage.id'))
     client_id = db.Column(db.Integer, ForeignKey('client.id'))
     date_debut = db.Column(db.DateTime, index=True, default=datetime.now(timezone.utc))
     user_id = db.Column(db.Integer, ForeignKey('user.id'))
-    client = relationship('Client', back_populates='fiche_suivi')
-    user = relationship('User', back_populates='fiche_suivi')
+    client = relationship('Client', back_populates='fiche_suivi', uselist=False)
+    user = relationship('User', back_populates='fiche_suivi', uselist=False)
     devis = relationship('Devis', back_populates='fiche_suivi')
+    prestation = relationship('Prestation', back_populates='fiche_suivi')
 
     def __repr__(self):
         return f'<FicheSuivi {self.id}>'
@@ -157,8 +157,11 @@ class FicheSuivi(Base):
 class Prestation(Base):
     __tablename__ = 'prestation'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    fiche_suivi_id = db.Column(db.Integer, ForeignKey('fiche_suivi.id'))
     type_prestation = db.Column(db.String(45), index=True)
-    code = db.Column(db.String(45), index=True, unique=True)
+    description = db.Column(db.String(700), index=True)
+    code = db.Column(db.String(45), index=True)
+    fiche_suivi = relationship('FicheSuivi', back_populates='prestation')
 
     def __repr__(self):
         return f'<Prestation {self.id}>'
