@@ -1,10 +1,12 @@
 from app import app, db
 from flask import render_template, flash, redirect, url_for, current_app
-from app.forms import LoginForm, ProjectCreation, SocieteCreation, UserCreation, ContactCreation, UserModification, PrestationCreation
+from app.forms import LoginForm, ProjectCreation, SocieteCreation, UserCreation, ContactCreation, UserModification, PrestationCreation, ProjetModification
 from app.models import User, FicheSuivi, Client, Societe, Personne, Prestation
 from flask_login import current_user, login_user, logout_user, login_required, login_manager
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.orm import joinedload
+
 
 
 
@@ -70,19 +72,19 @@ def AjouterProjet():
     form2 = SocieteCreation()
 
     form.agent.choices = [(user.username, user.username) for user in User.query.all()]
-    form.client.choices = [(client.id, client.societe.nom if client.societe else client.personne.nom) for client in Client.query.all()]
+    form.client.choices = [(client.id, client.societe.nom if client.societe and client.societe.nom else client.personne.nom) for client in Client.query.all()]
 
+    user = User.query.filter_by(username=form.agent.data).first()
     if form.validate_on_submit():
         print("form validated")
         unique_fsn = FicheSuivi.generate_fsn()
         
 
         new_fiche = FicheSuivi(
-            fsn=unique_fsn,
+            FSN=unique_fsn,
             projet=form.nom.data,
             adresse=form.adresse.data,
-            date_creation=datetime.now,
-            agent=form.agent.data,
+            user_id=user.id,
             client_id=form.client.data
         )
         
@@ -96,6 +98,16 @@ def AjouterProjet():
 def List_FichesSuivi():
     fiche_suivi = FicheSuivi.query.all()
     return render_template('list_prj_consultation.html', title='Fiches de suivi', fiches=fiche_suivi)
+
+@app.route('/SupprimerProjet/<int:projet_id>', methods=['POST'])
+@login_required
+def SupprProjet(projet_id):
+    project = FicheSuivi.query.get_or_404(projet_id)
+    
+    db.session.delete(project)
+    db.session.commit()
+    flash('Projet supprimé avec succès', 'success')
+    return redirect(url_for('List_FichesSuivi'))
 
 @login_required
 @app.route('/projet/<int:id>', methods=['GET', 'POST'])
@@ -120,6 +132,26 @@ def CreerPrestation(fiche_suivi_id):
         return redirect(url_for('AfficherProjet', id=fiche_suivi_id))
     return render_template('creer_prestation.html', title='Nouvelle Prestation', form=form, fiche_suivi_id=fiche_suivi_id)
 
+@login_required
+@app.route('/modifier_projet/<int:id>', methods=['GET', 'POST'])
+def ModifierProjet(id):
+    projet = FicheSuivi.query.get_or_404(id)
+    form = ProjetModification(obj = projet)
+    form.agent.choices = [(user.username, user.username) for user in User.query.all()]
+
+    if form.validate_on_submit():
+        if form.nom.data:
+            projet.projet = form.nom.data
+        if form.adresse.data:
+            projet.adresse = form.adresse.data
+        if form.agent.data:
+            selected_user = User.query.filter_by(username=form.agent.data).first()
+            if selected_user:
+                projet.user_id = selected_user.id
+        db.session.commit()
+        return redirect(url_for('List_FichesSuivi'))
+    return render_template('modifier_projet.html', title='ModifierProjet', form=form, fiche=projet)
+
 
 
 
@@ -135,32 +167,33 @@ def CreerClient():
     form2 = SocieteCreation()
     new_personne = None
     new_societe = None
-    if (form.validate_on_submit() and form2.validate_on_submit()) or (form.validate_on_submit() or form2.validate_on_submit()):
-        existing_personne = Personne.query.filter(
-            (Personne.email == form.email.data) | 
-            (Personne.tel == form.tel.data)
-        ).first()
+    new_client = None
+       
+    if form2.validate_on_submit() and form.validate_on_submit():
+        
         existing_societe = Societe.query.filter(
             (Societe.email == form2.email.data) |
             (Societe.tel1 == form2.tel1.data)
         ).first()
+        existing_personne = Personne.query.filter(
+            (Personne.email == form.email_contact.data) | 
+            (Personne.tel == form.tel.data)
+        ).first()
         
-        if existing_personne or existing_societe:
-
+        if existing_societe:
             flash('Client déjà existant', 'danger')
         else:
             new_personne = Personne(
-                nom=form.nom.data,
+                nom=form.nom_contact.data,
                 prenom=form.prenom.data,
                 adresse=form.adresse.data,
                 tel=form.tel.data,
                 gsm=form.gsm.data,
-                email=form.email.data
+                email=form.email_contact.data
             )
-            
             db.session.add(new_personne)
             db.session.commit()
-        
+
             new_societe = Societe(
                 nom=form2.nom.data,
                 type_societe=form2.type_societe.data,
@@ -170,7 +203,6 @@ def CreerClient():
                 fax=form2.fax.data,
                 email=form2.email.data
             )
-
             db.session.add(new_societe)
             db.session.commit()
 
@@ -180,8 +212,34 @@ def CreerClient():
             )
             db.session.add(new_client)
             db.session.commit()
+            
             return redirect(url_for('AjouterProjet'))
-        
+    elif form.validate_on_submit():
+        existing_personne = Personne.query.filter(
+            (Personne.email == form.email_contact.data) | 
+            (Personne.tel == form.tel.data)
+        ).first()
+        if existing_personne:
+            flash('Personne déjà existante', 'danger')
+        else:
+            new_personne = Personne(
+                nom=form.nom_contact.data,
+                prenom=form.prenom.data,
+                adresse=form.adresse.data,
+                tel=form.tel.data,
+                gsm=form.gsm.data,
+                email=form.email_contact.data
+            )
+            db.session.add(new_personne)
+            db.session.commit()
+
+            new_client = Client(
+                personne_id=new_personne.id
+            )
+            db.session.add(new_client)
+            db.session.commit()
+            
+            return redirect(url_for('AjouterProjet'))    
     else:
         print("Form Errors: ", form.errors)
         print("Form2 Errors: ", form2.errors)
@@ -191,13 +249,47 @@ def CreerClient():
 @login_required
 @app.route('/liste_clients')
 def ListClients():
-    clients = Client.query.all()
-    for client in clients:
-        if client.societe:
-            return client.societe
-        else:
-            return client.personne
+    clients = Client.query.options(joinedload(Client.personne), joinedload(Client.societe)).all()
     return render_template('list_clients.html', title='Clients', clients=clients)
+
+@login_required
+@app.route('/modifier_client/<int:id>', methods=['GET', 'POST'])
+def ModifierClient(id):
+    client = Client.query.get_or_404(id)
+    form = ContactCreation(obj = client.personne)
+    form2 = SocieteCreation(obj = client.societe)
+    if form.validate_on_submit() and form2.validate_on_submit():
+        if form.nom_contact.data:
+            client.personne.nom = form.nom_contact.data
+        if form.prenom.data:
+            client.personne.prenom = form.prenom.data
+        if form.adresse.data:
+            client.personne.adresse = form.adresse.data
+        if form.tel.data:
+            client.personne.tel = form.tel.data
+        if form.gsm.data:
+            client.personne.gsm = form.gsm.data
+        if form.email_contact.data:
+            client.personne.email = form.email_contact.data
+
+        if form2.nom.data:
+            client.societe.nom = form2.nom.data
+        if form2.type_societe.data:
+            client.societe.type_societe = form2.type_societe.data
+        if form2.domaine.data:
+            client.societe.domaine = form2.domaine.data
+        if form2.tel1.data:
+            client.societe.tel1 = form2.tel1.data
+        if form2.tel2.data:
+            client.societe.tel2 = form2.tel2.data
+        if form2.fax.data:
+            client.societe.fax = form2.fax.data
+        if form2.email.data:
+            client.societe.email = form2.email.data
+
+        db.session.commit()
+        return redirect(url_for('ListClients'))
+    return render_template('modifier_client.html', title='ModifierClient', form=form, form2=form2, client=client)
 
 
 
@@ -266,8 +358,10 @@ def ModifierAgent(id):
             agent.privilege = form.privilege.data
 
         db.session.commit()
-
-    return render_template('modifier_agent.html', title='ModifierAgent', form=form)   
+        return redirect(url_for('ListAgents'))
+        
+    
+    return render_template('modifier_agent.html', title='ModifierAgent', form=form, agent=agent)   
 
 @login_required
 @app.route('/liste_agents')

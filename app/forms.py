@@ -9,15 +9,16 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Connexion')
 
 class UserModification(FlaskForm):
-    nom = StringField('Nom')
-    prenom = StringField('Prenom')
-    username = StringField('Username')
-    adresse = StringField('Adresse')
-    tel = StringField('Tel')
-    email = StringField('Email', validators=[Email()])
-    password = PasswordField('Password')
-    confirm_password = PasswordField('Confirm Password', validators=[EqualTo('password', message='Passwords must match.')])
-    privilege = SelectField('Privilege', choices=[('admin','admin'), ('agent','agent')])
+    nom = StringField('Nom', validators=[Optional()])
+    prenom = StringField('Prenom', validators=[Optional()])
+    username = StringField('Username', validators=[Optional()])
+    adresse = StringField('Adresse', validators=[Optional()])
+    tel = StringField('Tel', validators=[Optional()])
+    gsm = StringField('GSM', validators=[Optional()])
+    email = StringField('Email', validators=[Email(), Optional()])
+    password = PasswordField('Mot de passe', validators=[Optional()])
+    confirm_password = PasswordField('Confirmer le mot de passe', validators=[EqualTo('password', message='Les mots de passe doivent être similaires.'), Optional()])
+    privilege = SelectField('Privilège', choices=[('admin','admin'), ('agent','agent')], validators=[Optional()])
     submit = SubmitField('Modifier utilisateur')
     
     def validate_password(self, field):
@@ -50,12 +51,12 @@ class SocieteCreation(FlaskForm):
     email = StringField('Email')
 
 class ContactCreation(FlaskForm):
-    nom = StringField('Nom')
+    nom_contact = StringField('Nom')
     prenom = StringField('Prenom')
     adresse = StringField('Adresse')
     tel = StringField('Tel')
     gsm = StringField('GSM')
-    email = StringField('Email')
+    email_contact = StringField('Email')
     
 class UserCreation(FlaskForm):
     nom = StringField('Nom')
@@ -75,3 +76,27 @@ class PrestationCreation(FlaskForm):
     description = StringField('Description')
     code = StringField('Code', validators=[Optional()])
     submit = SubmitField('Créer')
+
+
+class ProjetModification(FlaskForm):
+    nom = StringField('Projet', validators=[Optional()])
+    adresse = StringField('Adresse', validators=[Optional()])
+    agent = SelectField('Agent', choices=[], validators=[Optional()])
+    submit = SubmitField('Créer')
+
+class SocieteModification(FlaskForm):
+    nom = StringField('Nom', validators=[Optional()])
+    type_societe = StringField('Type société', validators=[Optional()])
+    domaine = StringField('Domaine', validators=[Optional()])
+    tel1 = StringField('Tel1', validators=[Optional()])
+    tel2 = StringField('Tel2', validators=[Optional()])
+    fax = StringField('Fax', validators=[Optional()])
+    email = StringField('Email', validators=[Email(), Optional()])
+
+class ContactModification(FlaskForm):
+    nom_contact = StringField('Nom', validators=[Optional()])
+    prenom = StringField('Prenom', validators=[Optional()])
+    adresse = StringField('Adresse', validators=[Optional()])
+    tel = StringField('Tel', validators=[Optional()])
+    gsm = StringField('GSM', validators=[Optional()])
+    email_contact = StringField('Email', validators=[Email(), Optional()])

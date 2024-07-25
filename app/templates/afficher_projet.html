@@ -31,7 +31,13 @@
                 </tr>
                 <tr class="table-active">
                     <th scope="row">Client</th>
-                    <td>{{ projet.client.name }}</td>
+                    <td>
+                    {% if projet.client.societe %}
+                        {{ projet.client.societe.nom }}
+                    {% else %}
+                        {{ projet.client.personne.nom + " " + projet.client.personne.prenom }}
+                    {% endif %}
+                    </td>
                 </tr>
                 <tr class="table-active">
                     <th scope="row">Agent affecté</th>
@@ -60,6 +66,7 @@
                 </table>
             </div>
         {% endfor %}
+        <a type="button" class="btn btn-dark" href="{{ url_for('CreerPrestation', fiche_suivi_id=fiche_suivi_id) }}">Ajouter une préstation</a>
     </div>
     <div id="devis" style="margin: 0px 1200px 0px 100px;">
         <h2 class="text-secondary">Devis</h2>
@@ -68,11 +75,6 @@
                 
             </div>
         {% endfor %}
-        <div id="btn" style="margin-top: 50px; float: right; padding-bottom: 250px;">
-            <a type="button" class="btn btn-dark" href="{{ url_for('CreerPrestation', fiche_suivi_id=fiche_suivi_id) }}">Ajouter une préstation</a>
-        </div>
     </div>
-    <div id="btn" style="margin-top: 50px; float: right; padding-bottom: 250px;">
-        <a type="button" class="btn btn-secondary" onclick="window.history.back()">Retour</a>
-    </div>
+    <a type="button" class="btn btn-secondary" onclick="window.history.back()">Retour</a>
 {% endblock %}

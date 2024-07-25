@@ -5,7 +5,7 @@
     <h1 style="margin-left: 100px;">Liste des projets en phase de consultation</h1>
     <br><br>
     <div style="margin: 0 30px 0 30px;">
-        <table class="table table-hover">
+        <table class="table table-hover" style="text-align: center;">
             <thead>
               <tr>
                 <th scope="col">FSN</th>
@@ -19,16 +19,34 @@
                 <tr>
                     <td>{{ fiche.FSN }}</td>
                     <td><a href="{{ url_for('AfficherProjet', id=fiche.id) }}">{{ fiche.projet }}</a></td>
-                    <td>{{ fiche.client.name }}</td>
-                    <td>{{ fiche.user.username }}</td>
                     <td>
-                        {% if current_user.id == fiche.user_id %}
-                            <button type="button">Consulter</button>
-                        {% endif %}
+                        {{ fiche.client.societe.nom if fiche.client.societe and fiche.client.societe.nom else fiche.client.personne.nom + " " + fiche.client.personne.prenom }}                        
+                    </td>
+                    <td>
+                      {{ fiche.user.username }}
+                    </td>
+                    {% if current_user.privilege == "admin" %}
+                      <td style="text-align: right; width: 8%;">
+                        <form action="{{ url_for('SupprProjet', projet_id=fiche.id) }}" method="post" onsubmit="return confirmDelete(this, '{{fiche.id}}')">
+                          <button type="submit" class="btn btn-danger">Supprimer</button>
+                        </form>
+                      </td>
+                    {% endif %}
+                    <td style="text-align: right; width: 6%;">
+                        <a type="button" class="btn btn-secondary" href="{{ url_for('ModifierProjet', id=fiche.id) }}">Modifier</a>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
           </table>
     </div>
+    <script>
+      function confirmDelete(projectId) {
+        const isConfirmed = confirm('Est ce que vous êtes sure de vouloir supprimer ce projet?');
+        if (!isConfirmed) {
+          return false;
+        }
+        return true;
+      }
+    </script>
 {% endblock %}

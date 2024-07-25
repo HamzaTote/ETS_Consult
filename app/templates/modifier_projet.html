@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import render_input, render_select %}
+
+{% block content %}
+
+<head>
+    <title>Modifier projet</title>
+</head>
+<body>
+    <br>
+    <h1 style="margin-left: 100px;">Modifier projet</h1><br>
+    <div style="margin: 0px 1200px 0px 100px;">
+        <form action="{{ url_for('ModifierProjet', id=fiche.id) }}" method="post">
+            {{ form.hidden_tag() }}
+            <div>
+                {{ render_input(form.nom, "Nom") }}
+                {{ render_input(form.adresse, "Adresse") }}
+                {{ render_select(form.agent, "Choisir un agent", form.agent.choices) }}                
+            </div>
+            <div id="btn" style="margin-top: 50px; float: right; padding-bottom: 250px;">
+                <button type="button" class="btn btn-secondary" onclick="window.history.back()">Annuler</button>
+                <button type="submit" class="btn btn-dark">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+{% endblock %}

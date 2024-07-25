@@ -20,12 +20,12 @@
                 </div>
                 <div id="contact" style="flex: 1;">
                     <h2 class="text-secondary">Infos du contact:</h2>
-                    {{ render_input(form.nom, "Nom") }}
+                    {{ render_input(form.nom_contact, "Nom") }}
                     {{ render_input(form.prenom, "Prénom") }}
                     {{ render_input(form.adresse, "Adresse") }}
                     {{ render_input(form.tel, "Tel") }}
                     {{ render_input(form.gsm, "GSM") }}
-                    {{ render_input(form.email, "Email", type="email") }}
+                    {{ render_input(form.email_contact, "Email", type="email") }}
                 </div>
             </div>
             <div id="btn" style="margin-top: 50px; float: right;">

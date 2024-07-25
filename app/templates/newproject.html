@@ -15,16 +15,6 @@
                 {{ render_select(form.agent, "Choisir un agent", form.agent.choices) }}
                 {{ render_select(form.client, "Sélectionner un client", form.client.choices) }} <a type="button" href="{{ url_for('CreerClient') }}" class="btn btn-secondary">Nouveau client</a>
             </div>
-            <!-- <div id="client" style="margin-top: 75px;">
-                <h2 class="text-secondary">Infos du client:</h2>
-                {{ render_input(form2.nom, "Nom du client") }}
-                {{ render_input(form2.type_societe, "Type de société") }}
-                {{ render_input(form2.domaine, "Domaine") }}
-                {{ render_input(form2.tel1, "Tel 1") }}
-                {{ render_input(form2.tel2, "Tel 2") }}
-                {{ render_input(form2.fax, "Fax") }}
-                {{ render_input(form2.email, "Email", type="email") }}
-            </div> -->
             <div id="btn" style="margin-top: 50px; float: right; padding-bottom: 250px;">
                 <a type="button" class="btn btn-secondary" onclick="window.history.back()">Annuler</a>
                 <button type="submit" class="btn btn-dark">Enregistrer</button>

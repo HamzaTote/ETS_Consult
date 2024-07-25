@@ -13,12 +13,12 @@
 <body>
     <br>
     {% if current_user.privilege == "admin" %}
-    <h1 style="margin-left: 100px;">Modification du profil de {{ current_user.personne.prenom +" "+ current_user.personne.nom }}</h1><br>
+    <h1 style="margin-left: 100px;">Modification du profil de {{ agent.personne.prenom +" "+ agent.personne.nom }}</h1><br>
     {% else %}
     <h1 style="margin-left: 100px;">Modifier profil</h1><br>
     {% endif %}
     <div style="margin: 0px 1200px 0px 100px;">
-        <form action="{{ url_for('ModifierAgent', id=current_user.id) }}" method="post">
+        <form action="{{ url_for('ModifierAgent', id=agent.id) }}" method="post">
             {{ form.hidden_tag() }}
             
             <div id="profil">
@@ -26,6 +26,7 @@
                 {{ render_input(form.prenom, "Prénom")}}
                 {{ render_input(form.adresse, "Adresse")}}
                 {{ render_input(form.tel, "Téléphone")}}
+                {{ render_input(form.gsm, "GSM")}}
                 {{ render_input(form.email, "Email")}}
                 {{ render_input(form.password, "Mot de passe", type="password")}}
                 {{ render_input(form.confirm_password, "Confirmer mot de passe", type="password")}}

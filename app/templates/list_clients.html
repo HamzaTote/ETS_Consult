@@ -5,7 +5,7 @@
 <h1 style="margin-left: 100px;">Liste des clients</h1>
 <br><br>
 <div style="margin: 0 30px 0 30px;">
-    <table class="table table-hover">
+    <table class="table table-hover" style="text-align: center;">
         <thead>
           <tr>
             <th scope="col">Nom</th>
@@ -16,15 +16,29 @@
           </tr>
         </thead>
         <tbody class="table-active">
-            {% for client in clients %}
             <tr>
-                <td><a href="{{ url_for('AfficherProjet', id=fiche.id) }}">{{ client.nom }}</a></td>
-                <td>{{ client.prenom }}</td>
-                <td>{{ client.tel1 or client.tel }}</td>
-                <td>{{ client.tel2 or client.gsm }}</td>
-                <td>{{ client.email }}</td>
+              {% for client in clients %}
+                {% if client.societe and client.societe.nom and client.societe.tel1 and client.societe.tel2 and client.societe.email %}
+                  <tr>
+                    <td>{{ client.societe.nom }}</td>
+                    <td></td>
+                    <td>{{ client.societe.tel1 }}</td>
+                    <td>{{ client.societe.tel2 }}</td>
+                    <td>{{ client.societe.email }}</td>
+                    <td style="text-align: right;"><a href="{{ url_for('ModifierClient', id=client.id) }}" class="btn btn-secondary">Modifier</a></td>
+                  </tr>
+                {% else %}
+                  <tr>
+                    <td>{{ client.personne.nom }}</td>
+                    <td>{{ client.personne.prenom }}</td>
+                    <td>{{ client.personne.tel }}</td>
+                    <td>{{ client.personne.gsm }}</td>
+                    <td>{{ client.personne.email }}</td>
+                    <td style="text-align: right;"><a href="{{ url_for('ModifierClient', id=client.id) }}" class="btn btn-secondary">Modifier</a></td>
+                  </tr>
+                {% endif %}
+              {% endfor %}              
             </tr>
-            {% endfor %}
         </tbody>
       </table>
 </div>

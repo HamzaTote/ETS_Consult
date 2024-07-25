@@ -130,7 +130,7 @@ class FicheSuivi(Base):
     adresse = db.Column(db.String(255), index=True, unique=True)
     ouvrage_id = db.Column(db.Integer, ForeignKey('ouvrage.id'))
     client_id = db.Column(db.Integer, ForeignKey('client.id'))
-    date_debut = db.Column(db.DateTime, index=True, default=datetime.now(timezone.utc))
+    date_debut = db.Column(db.Date, index=True, default=lambda:datetime.now().date())
     user_id = db.Column(db.Integer, ForeignKey('user.id'))
     client = relationship('Client', back_populates='fiche_suivi', uselist=False)
     user = relationship('User', back_populates='fiche_suivi', uselist=False)
