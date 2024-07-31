@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import render_input, render_select, render_textarea %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouveau devis</title>
+</head>
+<body>
+    <br>
+    <h1 style="margin-left: 100px;">Nouveau devis</h1><br>
+    <div style="margin: 0px 1200px 0px 100px;">
+        <form action="{{ url_for('CreerDevis', fiche_suivi_id = fiche_suivi_id ) }}" method="post">
+            {{ form1.hidden_tag() }}
+            {{ form2.hidden_tag() }}
+            <div id="devis">
+                {{ render_input(form1.objet, "Objet") }}
+                {{ render_textarea(form1.generalites, "Généralités") }}
+            </div>
+            <div id="prestation-container"></div>
+            <div>
+                {{ render_select(form1.prestation, "Ajouter une prestation", form1.prestation.choices, id="prestation-select") }}
+                <input type="hidden" name="hidden_unite" value="">
+                <input type="hidden" name="hidden_quantite" value="">
+                <input type="hidden" name="hidden_prix_unitaire" value="">
+                <button type="button" id="add-prestation-btn" class="btn btn-secondary">Ajouter</button>
+            </div>
+            <div>
+                {{ render_input(form1.montant_ttc, "Total TTC") }}
+            </div>
+            <div id="btn" style="margin-top: 50px; float: right; padding-bottom: 250px;">
+                <button type="button" class="btn btn-secondary" onclick="window.history.back()">Annuler</button>
+                <button type="submit" class="btn btn-dark">Créer</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var addButton = document.getElementById('add-prestation-btn');
+            var selectField = document.getElementById('prestation-select');
+            var container = document.getElementById('prestation-container');
+            var form = document.querySelector('form');
+
+            addButton.addEventListener('click', function() {
+                console.log('Add button clicked');
+                var selectedValue = selectField.value;
+                var selectedText = selectField.options[selectField.selectedIndex].text;
+                console.log('Selected Value:', selectedValue);
+                console.log('Selected Text:', selectedText);
+
+                if (selectedValue) {
+                    var newBlock = document.createElement('div');
+                    newBlock.innerHTML = `
+                        <div style="border: 1px solid #ccc; border-radius: 8px; padding: 16px; margin-bottom: 16px; margin-top: 50px">
+                            <h4>Prestation: ${selectedText}</h4>
+                            <input type="hidden" name="prestation_ids" value="${selectedValue}">
+                            {{ render_input(form2.unite, "Unité") }}
+                            {{ render_input(form2.quantite, "Quantité") }}
+                            {{ render_input(form2.prix_unitaire, "Prix unitaire") }}
+                        </div>
+                    `;
+                    container.appendChild(newBlock);
+                    selectField.value = '';
+                }
+            });
+
+            form.addEventListener('submit', function(event) {
+                console.log('Form submit event triggered');
+                var hiddenUnite = document.querySelector('[name="hidden_unite"]');
+                var hiddenQuantite = document.querySelector('[name="hidden_quantite"]');
+                var hiddenPrixUnitaire = document.querySelector('[name="hidden_prix_unitaire"]');
+
+                var unite = document.querySelector('[name="unite"]').value;
+                var quantite = document.querySelector('[name="quantite"]').value;
+                var prixUnitaire = document.querySelector('[name="prix_unitaire"]').value;
+
+                hiddenUnite.value = unite;
+                hiddenQuantite.value = quantite;
+                hiddenPrixUnitaire.value = prixUnitaire;
+
+                console.log('Unite:', unite);
+                console.log('Quantite:', quantite);
+                console.log('Prix Unitaire:', prixUnitaire);
+            });
+        });
+    </script>
+</body>
+
+{% endblock %}

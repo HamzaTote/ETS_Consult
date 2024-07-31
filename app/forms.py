@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, IntegerField, TextAreaField, FloatField, HiddenField
 from wtforms.validators import DataRequired, ValidationError, Length, EqualTo, Email, Optional
 from app.models import User
 
@@ -72,8 +72,9 @@ class UserCreation(FlaskForm):
     
 
 class PrestationCreation(FlaskForm):
-    type = SelectField('Type', choices=[('Diagnostic', 'Diagnostic'), ('Etudes techniques', 'Etudes techniques'), ('Essais', 'Essais'), ('Etude géotechnique', 'Etude géotechnique'), ('Expertise', 'Expertise'), ('Evaluation', 'Evaluation'), ('Audit', 'Audit'), ('Suivi et réception des travaux', 'Suivi et réception des travaux')])
-    description = StringField('Description')
+    type = SelectField('Type', choices=[('Diagnostic', 'Diagnostic'), ('Etudes techniques', 'Etudes techniques'), ('Essais', 'Essais'), ('Etude géotechnique', 'Etude géotechnique'), ('Expertise', 'Expertise'), ('Evaluation', 'Evaluation'), ('Audit', 'Audit'), ('Suivi et réception des travaux', 'Suivi et réception des travaux')], validators=[DataRequired()])
+    titre = StringField('Titre', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
     code = StringField('Code', validators=[Optional()])
     submit = SubmitField('Créer')
 
@@ -100,3 +101,18 @@ class ContactModification(FlaskForm):
     tel = StringField('Tel', validators=[Optional()])
     gsm = StringField('GSM', validators=[Optional()])
     email_contact = StringField('Email', validators=[Email(), Optional()])
+
+class DevisCreation(FlaskForm):
+    objet = StringField('Objet', validators=[DataRequired()])
+    generalites = StringField('Généralités', validators=[DataRequired()])
+    prestation = SelectField('Prestation', choices=[], validators=[DataRequired()])
+    montant_ttc = FloatField('Total TTC', validators=[DataRequired()])
+    submit = SubmitField('Créer')
+
+
+class PrestationVF(FlaskForm):
+    unite = SelectField('Unité', validators=[DataRequired()], choices=[('m²', 'm²'), ('m³', 'm³'), ('F', 'F'), ('U', 'U'), ('V', 'V')])
+    quantite = IntegerField('Quantité', validators=[DataRequired()])
+    prix_unitaire = FloatField('Prix unitaire', validators=[DataRequired()])
+    submit = SubmitField('Ajouter')
+

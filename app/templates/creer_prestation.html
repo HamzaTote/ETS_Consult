@@ -13,6 +13,7 @@
             {{ form.hidden_tag() }}
             <div id="prestation">
                 {{ render_select(form.type, "Type", form.type.choices) }}
+                {{ render_input(form.titre, "Titre") }}
                 {{ render_textarea(form.description, "Description") }}
                 {{ render_input(form.code, "Code") }}                
             </div>

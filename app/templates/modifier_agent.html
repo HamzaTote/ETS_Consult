@@ -3,43 +3,61 @@
 
 {% block content %}
 
-<head>
-    {% if current_user.privilege == 'admin' %}
-    <title>Modifier agent</title>
-    {% else %}
-    <title>Modifier profil</title>
-    {% endif %}
-</head>
-<body>
-    <br>
-    {% if current_user.privilege == "admin" %}
-    <h1 style="margin-left: 100px;">Modification du profil de {{ agent.personne.prenom +" "+ agent.personne.nom }}</h1><br>
-    {% else %}
-    <h1 style="margin-left: 100px;">Modifier profil</h1><br>
-    {% endif %}
-    <div style="margin: 0px 1200px 0px 100px;">
-        <form action="{{ url_for('ModifierAgent', id=agent.id) }}" method="post">
-            {{ form.hidden_tag() }}
-            
-            <div id="profil">
-                {{ render_input(form.nom, "Nom")}}
-                {{ render_input(form.prenom, "Prénom")}}
-                {{ render_input(form.adresse, "Adresse")}}
-                {{ render_input(form.tel, "Téléphone")}}
-                {{ render_input(form.gsm, "GSM")}}
-                {{ render_input(form.email, "Email")}}
-                {{ render_input(form.password, "Mot de passe", type="password")}}
-                {{ render_input(form.confirm_password, "Confirmer mot de passe", type="password")}}
+<div class="container my-5">
+    <div class="row">
+        <div class="col">
+            <h1>
                 {% if current_user.privilege == 'admin' %}
-                    {{ render_input(form.privilege, "Rôle") }}
-                {% endif %}                
-            </div>
-            <div id="btn" style="margin-top: 50px; float: right; padding-bottom: 250px;">
-                <button type="button" class="btn btn-secondary" onclick="window.history.back()">Annuler</button>
-                <button type="submit" class="btn btn-dark">Enregistrer</button>
-            </div>
-        </form>
+                    Modification du profil de {{ agent.personne.prenom + " " + agent.personne.nom }}
+                {% else %}
+                    Modifier profil
+                {% endif %}
+            </h1>
+        </div>
     </div>
-</body>
+
+    <div class="row">
+        <div class="col-md-6">
+            <form action="{{ url_for('ModifierAgent', id=agent.id) }}" method="post">
+                {{ form.hidden_tag() }}
+
+                <div class="mb-3">
+                    {{ render_input(form.nom, "Nom") }}
+                </div>
+                <div class="mb-3">
+                    {{ render_input(form.prenom, "Prénom") }}
+                </div>
+                <div class="mb-3">
+                    {{ render_input(form.adresse, "Adresse") }}
+                </div>
+                <div class="mb-3">
+                    {{ render_input(form.tel, "Téléphone") }}
+                </div>
+                <div class="mb-3">
+                    {{ render_input(form.gsm, "GSM") }}
+                </div>
+                <div class="mb-3">
+                    {{ render_input(form.email, "Email") }}
+                </div>
+                <div class="mb-3">
+                    {{ render_input(form.password, "Mot de passe", type="password") }}
+                </div>
+                <div class="mb-3">
+                    {{ render_input(form.confirm_password, "Confirmer mot de passe", type="password") }}
+                </div>
+                {% if current_user.privilege == 'admin' %}
+                    <div class="mb-3">
+                        {{ render_input(form.privilege, "Rôle") }}
+                    </div>
+                {% endif %}
+                
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Annuler</button>
+                    <button type="submit" class="btn btn-dark">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

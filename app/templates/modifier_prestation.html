@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import render_input, render_select, render_textarea %}
+
+{% block content %}
+    <div class="container my-5">
+        <h1 class="mb-4">Modifier prestation</h1>
+        <form action="{{ url_for('ModifierPrestation', id=prestation.id) }}" method="post" style="width: 50%;">
+            {{ form.hidden_tag() }}
+            
+            <div class="mb-4">
+                <h2 class="text-secondary">Informations de la prestation:</h2>
+                {{ render_select(form.type, "Type", form.type.choices) }}
+                {{ render_input(form.titre, "Titre") }}
+                {{ render_textarea(form.description, "Description") }}
+                {{ render_input(form.code, "Code") }}
+            </div>
+            <div class="d-flex justify-content-end">
+                <a type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Annuler</a>
+                <button type="submit" class="btn btn-dark">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

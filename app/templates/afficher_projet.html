@@ -27,12 +27,12 @@
                 </tr>
                 <tr class="table-active">
                     <th scope="row">Date</th>
-                    <td>{{ projet.date }}</td>
+                    <td>{{ projet.date_debut }}</td>
                 </tr>
                 <tr class="table-active">
                     <th scope="row">Client</th>
                     <td>
-                    {% if projet.client.societe %}
+                    {% if projet.client.societe and projet.client.societe.nom%}
                         {{ projet.client.societe.nom }}
                     {% else %}
                         {{ projet.client.personne.nom + " " + projet.client.personne.prenom }}
@@ -48,33 +48,65 @@
         </table>
         </div>
     </div>
-    <div id="prestations" style="margin: 0px 1200px 0px 100px;">
-        <h2 class="text-secondary">Prestations</h2>
-        {% for prestation in prestations %}
-            <div>
-                <table class="table table-hover">
-                    <tbody>
-                        <tr class="table-active">
-                            <th scope="row">Type</th>
-                            <td>{{ prestation.type_prestation }}</td>
-                        </tr>
-                        <tr class="table-active">
-                            <th scope="row">Description</th>
-                            <td><p>{{ prestation.description | replace("\n", "<br>") |safe }}</p></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        {% endfor %}
-        <a type="button" class="btn btn-dark" href="{{ url_for('CreerPrestation', fiche_suivi_id=fiche_suivi_id) }}">Ajouter une préstation</a>
+    <h2 class="text-secondary" style="margin-left: 100px;">Prestations</h2>
+    <div id="prestations" style="margin: 0px 100px; display: flex; flex-wrap: wrap; gap: 20px;">
+        {% if projet.prestation %}
+            {% for prestation in prestations %}
+                <div class="p-4 border border-secondary rounded text-center" style="flex: 0 0 600px; box-sizing: border-box; margin-bottom: 50px;">
+                    <table class="table table-hover" style="width: 100%;">
+                        <tbody>
+                            <tr class="table-active">
+                                <th scope="row">Type</th>
+                                <td>{{ prestation.type_prestation }}</td>
+                            </tr>
+                            <tr class="table-active">
+                                <th scope="row">Titre</th>
+                                <td>{{ prestation.titre }}</td>
+                            </tr>
+                            <tr class="table-active">
+                                <th scope="row">Description</th>
+                                <td><p>{{ prestation.description | replace("\n", "<br>") |safe }}</p></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="d-flex justify-content-end">
+                        {% if current_user.privilege == "admin" %}
+                            <form action="{{ url_for('SupprPrestation', prestation_id=prestation.id) }}" method="post" onsubmit="return confirmDelete(this, '{{prestation.id}}')">
+                                <button type="submit" class="btn btn-danger me-2">Supprimer</button>
+                            </form>
+                        {% endif %}
+                        <a type="button" class="btn btn-secondary" href="{{ url_for('ModifierPrestation', id=prestation.id) }}">Modifier</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Aucune prestation n'a été ajoutée pour le moment.</p>
+        {% endif %}
     </div>
+        <a type="button" class="btn btn-dark" style="margin: 0px 1200px 0px 100px;" href="{{ url_for('CreerPrestation', fiche_suivi_id=fiche_suivi_id) }}">Ajouter une préstation</a>
+    <br><br>
     <div id="devis" style="margin: 0px 1200px 0px 100px;">
         <h2 class="text-secondary">Devis</h2>
-        {% for dev in devis %}
-            <div>
-                
-            </div>
-        {% endfor %}
-    </div>
-    <a type="button" class="btn btn-secondary" onclick="window.history.back()">Retour</a>
+        {% if projet.devis %}
+            {% for dev in devis %}
+                <div>
+                    
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Aucun devis n'a été ajouté pour le moment.</p>
+        {% endif %}
+        <a type="button" class="btn btn-dark" href="{{ url_for('CreerDevis', fiche_suivi_id=fiche_suivi_id) }}">Ajouter un devis</a>   
+    </div><br><br>
+    <a type="button" class="btn btn-secondary" onclick="window.history.back()" style="float: right; margin-right: 100px;">Retour</a>
+    <br><br><br>
+    <script>
+        function confirmDelete(PrestationId) {
+          const isConfirmed = confirm('Est ce que vous êtes sure de vouloir supprimer ce projet?');
+          if (!isConfirmed) {
+            return false;
+          }
+          return true;
+        }
+      </script>
 {% endblock %}

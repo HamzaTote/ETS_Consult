@@ -2,21 +2,21 @@
 {% from 'macros.html' import render_input, render_select %}
 
 {% block content %}
-    <br>
-    <h1 style="margin-left: 100px;">Nouveau projet</h1><br>
-    <div style="margin: 0px 1200px 0px 100px;">
-        <form action="{{ url_for('AjouterProjet') }}" method="post">
+    <div class="container my-5">
+        <h1 class="mb-4">Nouveau projet</h1>
+        <form action="{{ url_for('AjouterProjet') }}" method="post"  style="width: 50%;">
             {{ form.hidden_tag() }}
             
-            <div id="projet">
+            <div class="mb-4">
                 <h2 class="text-secondary">Informations du projet:</h2>
                 {{ render_input(form.nom, "Nom du projet") }}
                 {{ render_input(form.adresse, "Adresse du projet") }}
                 {{ render_select(form.agent, "Choisir un agent", form.agent.choices) }}
-                {{ render_select(form.client, "Sélectionner un client", form.client.choices) }} <a type="button" href="{{ url_for('CreerClient') }}" class="btn btn-secondary">Nouveau client</a>
+                {{ render_select(form.client, "Sélectionner un client", form.client.choices) }}
+                <a type="button" href="{{ url_for('CreerClient') }}" class="btn btn-secondary mt-2">Nouveau client</a>
             </div>
-            <div id="btn" style="margin-top: 50px; float: right; padding-bottom: 250px;">
-                <a type="button" class="btn btn-secondary" onclick="window.history.back()">Annuler</a>
+            <div class="d-flex justify-content-end">
+                <a type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Annuler</a>
                 <button type="submit" class="btn btn-dark">Enregistrer</button>
             </div>
         </form>

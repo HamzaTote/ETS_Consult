@@ -136,6 +136,7 @@ class FicheSuivi(Base):
     user = relationship('User', back_populates='fiche_suivi', uselist=False)
     devis = relationship('Devis', back_populates='fiche_suivi')
     prestation = relationship('Prestation', back_populates='fiche_suivi')
+    prestation_vf = relationship('Prestation_vf', back_populates='fiche_suivi')
 
     def __repr__(self):
         return f'<FicheSuivi {self.id}>'
@@ -159,12 +160,28 @@ class Prestation(Base):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     fiche_suivi_id = db.Column(db.Integer, ForeignKey('fiche_suivi.id'))
     type_prestation = db.Column(db.String(45), index=True)
+    titre = db.Column(db.String(255), index=True)
     description = db.Column(db.String(700), index=True)
     code = db.Column(db.String(45), index=True)
     fiche_suivi = relationship('FicheSuivi', back_populates='prestation')
 
     def __repr__(self):
         return f'<Prestation {self.id}>'
+
+class Prestation_vf(Base):
+    __tablename__ = 'prestation_vf'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    fiche_suivi_id = db.Column(db.Integer, ForeignKey('fiche_suivi.id'))
+    devis_id = db.Column(db.Integer, ForeignKey('devis.id'))
+    unite = db.Column(db.String(45), index=True)
+    quantite = db.Column(db.Integer, index=True)
+    prix_unitaire = db.Column(db.Float, index=True)
+    montant_ht = db.Column(db.Float, index=True)
+    fiche_suivi = relationship('FicheSuivi', back_populates='prestation_vf')
+    devis = relationship('Devis', back_populates='prestation_vf')
+
+    def __repr__(self):
+        return f'<Prestation_vf {self.id}>'
 
 class Ouvrage(Base):
     __tablename__ = 'ouvrage'
@@ -192,7 +209,30 @@ class Devis(Base):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     numero = db.Column(db.String(45), index=True, unique=True)
     fiche_suivi_id = db.Column(db.Integer, ForeignKey('fiche_suivi.id'))
-    date = db.Column(db.DateTime, index=True, default=datetime.now(timezone.utc))
-    montant = db.Column(db.Float, index=True)
+    date = db.Column(db.DateTime, index=True, default=lambda:datetime.now().date())
+    objet = db.Column(db.String(255), index=True)
+    generalites = db.Column(db.String(700), index=True)
+    montant_ht = db.Column(db.Float, index=True)
+    montant_ttc = db.Column(db.Float, index=True)
     fiche_suivi = relationship('FicheSuivi', back_populates='devis')
+    prestation_vf = relationship('Prestation_vf', back_populates='devis')
+
+    def __repr__(self):
+        return f'<Devis {self.id}>'
+    
+    def generate_devis_number(self, fiche_suivi_id):
+        current_year = datetime.now().year % 100
+        last_devis = Devis.query.filter(
+            Devis.numero.endswith(f'/{current_year}'),
+            Devis.fiche_suivi_id == fiche_suivi_id
+        ).order_by(Devis.id.desc()).first()
+    
+        if last_devis:
+            last_devis_number = int(last_devis.numero.split('/')[0])
+            new_devis_number = last_devis_number + 1
+        else:
+            new_devis_number = 1
+
+        new_devis = f'{new_devis_number:02d}/{current_year}'
+        return new_devis
     

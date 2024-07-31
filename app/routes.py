@@ -1,11 +1,12 @@
 from app import app, db
-from flask import render_template, flash, redirect, url_for, current_app
-from app.forms import LoginForm, ProjectCreation, SocieteCreation, UserCreation, ContactCreation, UserModification, PrestationCreation, ProjetModification
-from app.models import User, FicheSuivi, Client, Societe, Personne, Prestation
+from flask import render_template, flash, redirect, url_for, current_app, request
+from app.forms import LoginForm, ProjectCreation, SocieteCreation, UserCreation, ContactCreation, UserModification, PrestationCreation, ProjetModification, DevisCreation, PrestationVF
+from app.models import User, FicheSuivi, Client, Societe, Personne, Prestation, Prestation_vf, Devis
 from flask_login import current_user, login_user, logout_user, login_required, login_manager
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.orm import joinedload
+import json
 
 
 
@@ -124,6 +125,7 @@ def CreerPrestation(fiche_suivi_id):
         new_prestation = Prestation(
             fiche_suivi_id=fiche_suivi_id,
             type_prestation=form.type.data,
+            titre=form.titre.data,
             description=form.description.data,
             code = form.code.data
         )
@@ -131,6 +133,34 @@ def CreerPrestation(fiche_suivi_id):
         db.session.commit()
         return redirect(url_for('AfficherProjet', id=fiche_suivi_id))
     return render_template('creer_prestation.html', title='Nouvelle Prestation', form=form, fiche_suivi_id=fiche_suivi_id)
+
+@app.route('/SupprimerPrestation/<int:prestation_id>', methods=['POST'])
+@login_required
+def SupprPrestation(prestation_id):
+    prestation = Prestation.query.get_or_404(prestation_id)
+    
+    db.session.delete(prestation)
+    db.session.commit()
+    flash('Prestation supprimée avec succès', 'success')
+    return redirect(url_for('AfficherProjet', id=prestation.fiche_suivi_id))
+
+@login_required
+@app.route('/modifier_prestation/<int:id>', methods=['GET', 'POST'])
+def ModifierPrestation(id):
+    prestation = Prestation.query.get_or_404(id)
+    form = PrestationCreation(obj = prestation)
+    if form.validate_on_submit():
+        if form.type.data:
+            prestation.type_prestation = form.type.data
+        if form.titre.data:
+            prestation.titre = form.titre.data
+        if form.description.data:
+            prestation.description = form.description.data
+        if form.code.data:
+            prestation.code = form.code.data
+        db.session.commit()
+        return redirect(url_for('AfficherProjet', id=prestation.fiche_suivi_id))
+    return render_template('modifier_prestation.html', title='ModifierPrestation', form=form, prestation=prestation)
 
 @login_required
 @app.route('/modifier_projet/<int:id>', methods=['GET', 'POST'])
@@ -151,6 +181,54 @@ def ModifierProjet(id):
         db.session.commit()
         return redirect(url_for('List_FichesSuivi'))
     return render_template('modifier_projet.html', title='ModifierProjet', form=form, fiche=projet)
+
+@login_required
+@app.route('/Creer_Devis/<int:fiche_suivi_id>', methods=['GET', 'POST'])
+def CreerDevis(fiche_suivi_id):
+    form1 = DevisCreation()
+    form2 = PrestationVF()
+    choices = [(prestation.id, prestation.titre) for prestation in Prestation.query.filter_by(fiche_suivi_id=fiche_suivi_id).all()]
+    form1.prestation.choices = choices
+    
+    if form1.validate_on_submit() and form2.validate_on_submit():
+        print("form1 validated")
+        try:
+            new_devis = Devis(
+                numero = Devis.generate_devis_number(fiche_suivi_id),
+                fiche_suivi_id=fiche_suivi_id,
+                objet=form1.objet.data,
+                generalites=form1.generalites.data
+            )
+            db.session.add(new_devis)
+            db.session.commit()
+
+            prestations = request.form.getlist('prestations')
+            for prestation_data in prestations:
+                prestation_data = json.loads(prestation_data)
+                new_prestation_vf = Prestation_vf(
+                    devis_id=new_devis.id,
+                    fiche_suivi_id=fiche_suivi_id,
+                    unite=prestation_data['unite'],
+                    quantite=prestation_data['quantite'],
+                    prix_unitaire=prestation_data['prix_unitaire'],
+                    montant_ht=prestation_data['quantite'] * prestation_data['prix_unitaire']
+                )
+                db.session.add(new_prestation_vf)
+            db.session.commit()
+
+            total_montant_ht = db.session.query(db.func.sum(Prestation_vf.montant_ht)).filter_by(devis_id=new_devis.id).scalar()
+            new_devis.montant_ht = total_montant_ht
+
+            new_devis.montant_ttc = form1.montant_ttc.data
+            db.session.commit()
+            return redirect(url_for('AfficherProjet', id=fiche_suivi_id))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"An error occurred: {str(e)}", "danger")
+            print(f"An error occurred: {str(e)}")
+    return render_template('creer_devis.html', title='Nouveau Devis', form1=form1, form2=form2, fiche_suivi_id=fiche_suivi_id)
+
+
 
 
 
